@@ -22,5 +22,6 @@
   "devDependencies": {
     "rimraf": "^3.0.0",
     "typescript": "^3.7.3"
-  }
+  },
+  "keywords": ["typescript", "vue", "vuex"]
 }
