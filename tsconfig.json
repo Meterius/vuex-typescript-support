@@ -3,7 +3,12 @@
     "target": "es2017",
     "declaration": true,
     "module": "commonjs",
-    "lib": ["es2017"],
+    "lib": [
+      "es2017",
+      "dom",
+      "dom.iterable",
+      "scripthost"
+    ],
     "outDir": "dist"
   },
   "include": ["src/index.ts"]
