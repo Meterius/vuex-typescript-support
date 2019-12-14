@@ -1,0 +1,26 @@
+{
+  "name": "vuex-typescript-support",
+  "version": "0.0.1",
+  "description": "Add Typescript types to improve type safety in Vue projects using Vuex",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "npx --no-install rimraf dist && npx --no-install tsc",
+    "build:watch": "npm run build -- --watch",
+    "prepublishOnly": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Meterius/vuex-typescript-support.git"
+  },
+  "author": "Jonah Leander Hoff",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Meterius/vuex-typescript-support/issues"
+  },
+  "homepage": "https://github.com/Meterius/vuex-typescript-support#readme",
+  "devDependencies": {
+    "rimraf": "^3.0.0",
+    "typescript": "^3.7.3"
+  }
+}
