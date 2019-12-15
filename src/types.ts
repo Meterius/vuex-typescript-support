@@ -2,49 +2,38 @@
  * Store Definition Types
  */
 
-type IsStrictTrueOrFalse<T extends boolean> = T extends true ?
-  (T extends false ? false : true) : true;
-
-type NotExtendingKeys<T, E> = {
+type NotExtendingKeys<T extends {}, E> = {
   [key in keyof T]: T[key] extends E ? never : key
 }[keyof T];
 
-type OnlyAllowedValues<T, E> = T[keyof T] extends E ? true : false;
+type ValueTypes<T extends {}> = keyof T extends never ? never : T[keyof T];
 
-type ConditionFunction = (...args: any) => any;
+type AnyFunction = (...args: any) => any;
 
-type ConditionNotMoreThanOneParameter = (primary?: any) => any;
+type AnyFunctionWithNotMoreThanOneParameter = (primary?: any) => any;
 
-type ConditionCheckedStoreDefinition = CheckedStoreDefinition;
-
-type StoreDefinitionError<State, Getters, Mutations, Actions, Modules, Namespaced extends boolean> = OnlyAllowedValues<Mutations, ConditionFunction> extends false ?
-  { error: 'Static Type Error: Some Mutations Are Not Functions', mutations: NotExtendingKeys<Mutations, ConditionFunction> }
-  : OnlyAllowedValues<Mutations, ConditionNotMoreThanOneParameter> extends false ?
-  { error: 'Static Type Error: Some Mutations Have More Than One Parameter', mutations: NotExtendingKeys<Mutations, ConditionNotMoreThanOneParameter> }
-  : OnlyAllowedValues<Actions, ConditionFunction> extends false ?
-  { error: 'Static Type Error: Some Actions Are Not Functions', actions: NotExtendingKeys<Actions, ConditionFunction> }
-  : OnlyAllowedValues<Actions, ConditionNotMoreThanOneParameter> extends false ?
-  { error: 'Static Type Error: Some Actions Have More Than One Parameter', actions: NotExtendingKeys<Actions, ConditionNotMoreThanOneParameter> }
-  : OnlyAllowedValues<Modules, ConditionCheckedStoreDefinition> extends false ?
-  { error: 'Static Type Error: Some Modules Are Not Valid Store Definitions', modules: NotExtendingKeys<Modules, ConditionCheckedStoreDefinition> }
-  : IsStrictTrueOrFalse<Namespaced> extends false ?
-  { error: 'Static Type Error: Namespaced Needs To be True Or False' }
-  : undefined;
-
-type ReturnNotUndefined<A, B> = A extends undefined ? B : A;
+type TestValues<T extends {}, ERR extends string, E, R> =
+  ValueTypes<T> extends E ? R : { error: ERR; keys: NotExtendingKeys<T, E>; };
 
 export type StoreDefinition<
-  State,
-  Getters,
-  Mutations,
-  Actions,
-  Modules = {},
-  Namespaced extends boolean = false,
-> =
-  ReturnNotUndefined<
-    StoreDefinitionError<State, Getters, Mutations, Actions, Modules, Namespaced>,
+  State extends {},
+  Getters extends {},
+  Mutations extends {},
+  Actions extends {},
+  Modules extends {} = {},
+  Namespaced extends "true" | "false" = "false",
+> = TestValues<
+    Mutations, "Static Error Type: Some Mutations Are Not Functions", AnyFunction,
+  TestValues<
+    Mutations, "Static Error Type: Some Mutations Have More Than One Parameter", AnyFunctionWithNotMoreThanOneParameter,
+  TestValues<
+    Actions, "Static Error Type: Some Actions Are Not Functions", AnyFunction,
+  TestValues<
+    Actions, "Static Error Type: Some Actions Have More Than One Parameter", AnyFunctionWithNotMoreThanOneParameter,
+  TestValues<
+    Modules, "Static Error Type: Some Modules Are Not Valid Store Definitions", CheckedStoreDefinition,
     CheckedStoreDefinition<State, Getters, Mutations, Actions, Modules, Namespaced>
-  >;
+  >>>>>;
 
 export type CheckedStoreDefinition<
   State = any,
@@ -59,7 +48,7 @@ export type CheckedStoreDefinition<
   Mutations: Mutations;
   Actions: Actions;
   Modules: Modules;
-  Namespaced: Namespaced;
+  Namespaced: Namespaced extends "true" ? true : false;
 };
 
 /*
