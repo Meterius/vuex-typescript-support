@@ -1,4 +1,4 @@
-import { StoreDefinition } from "vuex-typescript-support";
+import { StoreDefinition } from 'vuex-typescript-support';
 
 export interface AlphaState {
   varA: boolean;

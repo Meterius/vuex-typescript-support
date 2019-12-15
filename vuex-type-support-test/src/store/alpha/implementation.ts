@@ -3,9 +3,9 @@ import {
   GettersImplementation,
   MutationsImplementation,
   StateImplementation,
-  StoreImplementation
-} from "vuex-typescript-support";
-import { AlphaStoreDefinition } from "@/store/alpha/types";
+  StoreImplementation,
+} from 'vuex-typescript-support';
+import { AlphaStoreDefinition } from '@/store/alpha/types';
 
 export const stateImplementation: StateImplementation<AlphaStoreDefinition> = {
   varA: false,
@@ -14,7 +14,7 @@ export const stateImplementation: StateImplementation<AlphaStoreDefinition> = {
 
 export const gettersImplementation: GettersImplementation<AlphaStoreDefinition> = {
   varBPlusTwo: state => state.varB + 2,
-  getAndVarA: (state) => (operand: boolean) => state.varA && operand,
+  getAndVarA: state => (operand: boolean) => state.varA && operand,
 };
 
 export const mutationsImplementation: MutationsImplementation<AlphaStoreDefinition> = {
@@ -24,7 +24,7 @@ export const mutationsImplementation: MutationsImplementation<AlphaStoreDefiniti
 
 export const actionsImplementation: ActionsImplementation<AlphaStoreDefinition> = {
   toggleVarA: ({ commit }) => { commit('toggleVarA'); },
-  add: ({ commit }, x) => { commit('addVarB', x); }
+  add: ({ commit }, x) => { commit('addVarB', x); },
 };
 
 export const alphaStore: StoreImplementation<AlphaStoreDefinition> = {
@@ -33,4 +33,3 @@ export const alphaStore: StoreImplementation<AlphaStoreDefinition> = {
   mutations: mutationsImplementation,
   actions: actionsImplementation,
 };
-

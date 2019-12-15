@@ -2,6 +2,8 @@
  * Store Definition Types
  */
 
+import {Store} from "vuex";
+
 type NotExtendingKeys<T extends {}, E> = {
   [key in keyof T]: T[key] extends E ? never : key
 }[keyof T];
@@ -44,10 +46,10 @@ export type CheckedStoreDefinition<
   Namespaced = any,
   > = {
   State: State;
-  Getters: Getters;
-  Mutations: Mutations;
-  Actions: Actions;
-  Modules: Modules;
+  Getters: Readonly<Getters>;
+  Mutations: Readonly<Mutations>;
+  Actions: Readonly<Actions>;
+  Modules: Readonly<Modules>;
   Namespaced: Namespaced extends "true" ? true : false;
 };
 
@@ -58,6 +60,15 @@ export type CheckedStoreDefinition<
 export type State<SD extends CheckedStoreDefinition> = SD['State'];
 
 export type Getters<SD extends CheckedStoreDefinition> = SD['Getters'];
+
+type UnionToIntersection<U> =
+  (U extends any ? (k: U)=>void : never) extends ((k: infer I)=>void) ? I : never;
+
+export type TypedRootGetters<SD extends CheckedStoreDefinition> = UnionToIntersection<{
+  readonly [key in keyof Modules<SD>]: Namespaced<Modules<SD>[key]> extends true ? {
+    readonly [k in key]: TypedRootGetters<Modules<SD>[key]>
+  } : TypedRootGetters<Modules<SD>[key]>
+}[keyof Modules<SD>]> & Getters<SD>;
 
 export type Mutations<SD extends CheckedStoreDefinition> = SD['Mutations'];
 
@@ -97,6 +108,19 @@ export type Commit<SD extends CheckedStoreDefinition> = {
   ): void;
 };
 
+type CommitMutationTransform<A> = A extends () => void ? () => void :
+  A extends (payload: infer R) => void ? (payload: R) => void : never;
+
+export type CommitableMutations<SD extends CheckedStoreDefinition> = Readonly<{
+  [key in keyof Mutations<SD>]: CommitMutationTransform<Mutations<SD>[key]>
+}>;
+
+export type TypedRootCommit<SD extends CheckedStoreDefinition> = UnionToIntersection<{
+  readonly [key in keyof Modules<SD>]: Namespaced<Modules<SD>[key]> extends true ? {
+    readonly [k in key]: TypedRootCommit<Modules<SD>[key]>
+  } : TypedRootCommit<Modules<SD>[key]>
+}[keyof Modules<SD>]> & CommitableMutations<SD>;
+
 export type Dispatch<SD extends CheckedStoreDefinition> = {
   <ActionName extends ActionKeysWithPayload<SD>>(
     action: ActionName, payload: ActionPayload<Actions<SD>[ActionName]>
@@ -106,6 +130,23 @@ export type Dispatch<SD extends CheckedStoreDefinition> = {
     action: ActionName
   ): Promise<void>;
 };
+
+type ActionDispatchTransform<A> = A extends () => void | Promise<void> ? () => Promise<void> :
+  A extends (payload: infer R) => void | Promise<void> ? (payload: R) => Promise<void> : never;
+
+type DispatchableActions<SD extends CheckedStoreDefinition> = Readonly<{
+  [key in keyof Actions<SD>]: ActionDispatchTransform<Actions<SD>[key]>
+}>;
+
+export type TypedRootDispatch<SD extends CheckedStoreDefinition> = UnionToIntersection<{
+  readonly [key in keyof Modules<SD>]: Namespaced<Modules<SD>[key]> extends true ? {
+    readonly [k in key]: TypedRootDispatch<Modules<SD>[key]>
+  } : TypedRootDispatch<Modules<SD>[key]>
+}[keyof Modules<SD>]> & DispatchableActions<SD>;
+
+export type TypedStore<SD extends CheckedStoreDefinition> = Store<State<SD>> & {
+  typedGetters: TypedRootGetters<SD>
+}
 
 /*
  * Implementation Types
@@ -189,4 +230,4 @@ export type StoreImplementation<SD extends CheckedStoreDefinition> = MakeEmptyOp
   mutations: MutationsImplementation<SD>,
   actions: ActionsImplementation<SD>,
   modules: ModulesImplementation<SD>
-}>;
+}> & (Namespaced<SD> extends true ? { namespaced: true } : { namespaced?: false });
