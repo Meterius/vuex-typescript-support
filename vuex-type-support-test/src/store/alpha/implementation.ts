@@ -32,4 +32,5 @@ export const alphaStore: StoreImplementation<AlphaStoreDefinition> = {
   getters: gettersImplementation,
   mutations: mutationsImplementation,
   actions: actionsImplementation,
+  modules: {},
 };

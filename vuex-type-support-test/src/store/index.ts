@@ -2,9 +2,8 @@ import "./vue";
 import Vue from 'vue';
 import Vuex, {Store} from 'vuex';
 import {
-  buildStoreOptions, buildTypedStore, CommitableMutations,
-  StoreDefinition, TypedRootCommit,
-  TypedRootGetters,
+  buildStoreOptions, createTypedStore, RootStoreDefinition, StaticTypeErrorCheck,
+  StoreDefinition, TypedStore,
 } from 'vuex-typescript-support';
 import { alphaStore } from '@/store/alpha/implementation';
 import { AlphaStoreDefinition } from '@/store/alpha/types';
@@ -13,12 +12,14 @@ import { BetaStoreDefinition } from '@/store/beta/types';
 
 Vue.use(Vuex);
 
-export type RootStoreDefinition = StoreDefinition<{}, {}, {}, {}, {
+export interface VuexStoreDefinition extends RootStoreDefinition<{}, {}, {}, {}, {
   alpha: AlphaStoreDefinition,
   beta: BetaStoreDefinition,
-}>;
+}> {};
 
-const rootStoreImplementation = {
+const staticTypeCheck: StaticTypeErrorCheck<VuexStoreDefinition> = true;
+
+const vuexStoreImplementation = {
   state: {},
   getters: {},
   mutations: {},
@@ -29,7 +30,7 @@ const rootStoreImplementation = {
   },
 };
 
-export default buildTypedStore<RootStoreDefinition>(
-  new Store(buildStoreOptions(rootStoreImplementation)),
-  rootStoreImplementation,
+export default createTypedStore<VuexStoreDefinition, Store<any>>(
+  Vuex.Store,
+  vuexStoreImplementation
 );

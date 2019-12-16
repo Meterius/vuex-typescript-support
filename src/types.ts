@@ -10,52 +10,108 @@ type NotExtendingKeys<T extends {}, E> = {
 
 type ValueTypes<T extends {}> = keyof T extends never ? never : T[keyof T];
 
+type ModulesRootTypes<T extends {}> = {
+  [key in keyof T]: T[key] extends CheckedStoreDefinition ?
+    ModulesRootTypes<Modules<T[key]>> | RootStore<T[key]> : null
+}[keyof T];
+
+type NotExtendingRootModules<T extends {}, E> = {
+  [key in keyof T]: T[key] extends CheckedStoreDefinition ?
+    NotExtendingRootModules<Modules<T[key]>, E> | (
+      RootStore<T[key]> extends E ? never : key
+    ) : never
+}[keyof T];
+
 type AnyFunction = (...args: any) => any;
 
 type AnyFunctionWithNotMoreThanOneParameter = (primary?: any) => any;
 
-type TestValues<T extends {}, ERR extends string, E, R> =
-  ValueTypes<T> extends E ? R : { error: ERR; keys: NotExtendingKeys<T, E>; };
+type TestValues<T extends {}, E, ERR extends string, R> =
+  ValueTypes<T> extends E ? R : StaticTypeError<ERR, NotExtendingKeys<T, E>>;
 
-export type StoreDefinition<
+type TestModulesRoots<M extends {}, E, ERR extends string, R> =
+  ModulesRootTypes<M> extends E ? R : StaticTypeError<ERR, NotExtendingRootModules<M, E>>;
+
+type BaseStoreDefinition<
+  RootStore extends CheckedStoreDefinition | null,
+  State extends {},
+  Getters extends {},
+  Mutations extends {},
+  Actions extends {},
+  Modules extends {} = {}
+  // Namespaced extends "true" | "false" = "false",
+  > = TestValues<Mutations, AnyFunction, "Static Type Error: Some Mutations Are Not Functions",
+  TestValues<Mutations, AnyFunctionWithNotMoreThanOneParameter, "Static Type Error: Some Mutations Have More Than One Parameter",
+  TestValues<Actions, AnyFunction, "Static Type Error: Some Actions Are Not Functions",
+  TestValues<Actions, AnyFunctionWithNotMoreThanOneParameter, "Static Type Error: Some Actions Have More Than One Parameter",
+  TestValues<Modules, CheckedStoreDefinition, "Static Type Error: Some Modules Are Not Valid Store Definitions",
+//  TestModulesRoots<Modules, RootStore, "Static Type Error: Some Modules Have Not The Same Root Store",
+    CheckedStoreDefinition<RootStore, State, Getters, Mutations, Actions, Modules>
+//  >
+    >>>>>;
+
+export type RootStoreDefinition<
   State extends {},
   Getters extends {},
   Mutations extends {},
   Actions extends {},
   Modules extends {} = {},
-  Namespaced extends "true" | "false" = "false",
-> = TestValues<
-    Mutations, "Static Error Type: Some Mutations Are Not Functions", AnyFunction,
-  TestValues<
-    Mutations, "Static Error Type: Some Mutations Have More Than One Parameter", AnyFunctionWithNotMoreThanOneParameter,
-  TestValues<
-    Actions, "Static Error Type: Some Actions Are Not Functions", AnyFunction,
-  TestValues<
-    Actions, "Static Error Type: Some Actions Have More Than One Parameter", AnyFunctionWithNotMoreThanOneParameter,
-  TestValues<
-    Modules, "Static Error Type: Some Modules Are Not Valid Store Definitions", CheckedStoreDefinition,
-    CheckedStoreDefinition<State, Getters, Mutations, Actions, Modules, Namespaced>
-  >>>>>;
+> = BaseStoreDefinition<null, State, Getters, Mutations, Actions, Modules>;
 
-export type CheckedStoreDefinition<
+export type StoreDefinition<
+  RootStore extends CheckedStoreDefinition,
+  State extends {},
+  Getters extends {},
+  Mutations extends {},
+  Actions extends {},
+  Modules extends {} = {},
+  // Namespaced extends "true" | "false" = "false",
+> = BaseStoreDefinition<RootStore, State, Getters, Mutations, Actions, Modules>;
+
+export type StaticTypeErrorCheck<V> = V extends StaticTypeError<infer M, infer K> ? StaticTypeError<M, K> : true;
+
+export type CheckedRootStoreDefinition<
   State = any,
   Getters = any,
   Mutations = any,
   Actions = any,
   Modules = any,
-  Namespaced = any,
+> = CheckedStoreDefinition<null, State, Getters, Mutations, Actions, Modules>;
+
+export type CheckedStoreDefinition<
+  RootStore extends CheckedStoreDefinition | null = any,
+  State = any,
+  Getters = any,
+  Mutations = any,
+  Actions = any,
+  Modules = any,
+  // Namespaced = any,
   > = {
+  error: never;
+  keys: never;
+
+  RootStore: RootStore;
   State: State;
   Getters: Readonly<Getters>;
   Mutations: Readonly<Mutations>;
   Actions: Readonly<Actions>;
   Modules: Readonly<Modules>;
-  Namespaced: Namespaced extends "true" ? true : false;
+  // Namespaced: Namespaced extends "true" ? true : false;
 };
+
+type StaticTypeError<MSG, KEYS = undefined> = {
+  StaticTypeError: true,
+  Message: MSG,
+  Keys: KEYS,
+}
 
 /*
  * Checked Store Definition Types
  */
+
+export type IsRootStore<SD extends CheckedStoreDefinition> = RootStore<SD> extends null ? true : false;
+
+export type RootStore<SD extends CheckedStoreDefinition> = SD['RootStore'];
 
 export type State<SD extends CheckedStoreDefinition> = SD['State'];
 
@@ -64,11 +120,15 @@ export type Getters<SD extends CheckedStoreDefinition> = SD['Getters'];
 type UnionToIntersection<U> =
   (U extends any ? (k: U)=>void : never) extends ((k: infer I)=>void) ? I : never;
 
-export type TypedRootGetters<SD extends CheckedStoreDefinition> = UnionToIntersection<{
+export type StoreGetters<SD extends CheckedStoreDefinition> = UnionToIntersection<{
+  readonly [key in keyof Modules<SD>]: StoreGetters<Modules<SD>[key]>
+}[keyof Modules<SD>]> & Getters<SD>;
+
+/*export type TypedRootGetters<SD extends CheckedStoreDefinition> = UnionToIntersection<{
   readonly [key in keyof Modules<SD>]: Namespaced<Modules<SD>[key]> extends true ? {
     readonly [k in key]: TypedRootGetters<Modules<SD>[key]>
   } : TypedRootGetters<Modules<SD>[key]>
-}[keyof Modules<SD>]> & Getters<SD>;
+}[keyof Modules<SD>]> & Getters<SD>;*/
 
 export type Mutations<SD extends CheckedStoreDefinition> = SD['Mutations'];
 
@@ -96,7 +156,7 @@ type ActionKeysWithoutPayload<SD extends CheckedStoreDefinition> = {
 
 export type Modules<SD extends CheckedStoreDefinition> = SD['Modules'];
 
-export type Namespaced<SD extends CheckedStoreDefinition> = SD['Namespaced'];
+// export type Namespaced<SD extends CheckedStoreDefinition> = SD['Namespaced'];
 
 export type Commit<SD extends CheckedStoreDefinition> = {
   <MutationName extends MutationKeysWithPayload<SD>>(
@@ -108,7 +168,11 @@ export type Commit<SD extends CheckedStoreDefinition> = {
   ): void;
 };
 
-type CommitMutationTransform<A> = A extends () => void ? () => void :
+export type StoreCommit<SD extends CheckedStoreDefinition> = UnionToIntersection<{
+  readonly [key in keyof Modules<SD>]: StoreCommit<Modules<SD>[key]>
+}[keyof Modules<SD>]> & Commit<SD>;
+
+/*type CommitMutationTransform<A> = A extends () => void ? () => void :
   A extends (payload: infer R) => void ? (payload: R) => void : never;
 
 export type CommitableMutations<SD extends CheckedStoreDefinition> = Readonly<{
@@ -119,7 +183,7 @@ export type TypedRootCommit<SD extends CheckedStoreDefinition> = UnionToIntersec
   readonly [key in keyof Modules<SD>]: Namespaced<Modules<SD>[key]> extends true ? {
     readonly [k in key]: TypedRootCommit<Modules<SD>[key]>
   } : TypedRootCommit<Modules<SD>[key]>
-}[keyof Modules<SD>]> & CommitableMutations<SD>;
+}[keyof Modules<SD>]> & CommitableMutations<SD>;*/
 
 export type Dispatch<SD extends CheckedStoreDefinition> = {
   <ActionName extends ActionKeysWithPayload<SD>>(
@@ -131,7 +195,11 @@ export type Dispatch<SD extends CheckedStoreDefinition> = {
   ): Promise<void>;
 };
 
-type ActionDispatchTransform<A> = A extends () => void | Promise<void> ? () => Promise<void> :
+export type StoreDispatch<SD extends CheckedStoreDefinition> = UnionToIntersection<{
+  readonly [key in keyof Modules<SD>]: StoreDispatch<Modules<SD>[key]>
+}[keyof Modules<SD>]> & Dispatch<SD>;
+
+/* type ActionDispatchTransform<A> = A extends () => void | Promise<void> ? () => Promise<void> :
   A extends (payload: infer R) => void | Promise<void> ? (payload: R) => Promise<void> : never;
 
 type DispatchableActions<SD extends CheckedStoreDefinition> = Readonly<{
@@ -142,10 +210,12 @@ export type TypedRootDispatch<SD extends CheckedStoreDefinition> = UnionToInters
   readonly [key in keyof Modules<SD>]: Namespaced<Modules<SD>[key]> extends true ? {
     readonly [k in key]: TypedRootDispatch<Modules<SD>[key]>
   } : TypedRootDispatch<Modules<SD>[key]>
-}[keyof Modules<SD>]> & DispatchableActions<SD>;
+}[keyof Modules<SD>]> & DispatchableActions<SD>;*/
 
-export type TypedStore<SD extends CheckedStoreDefinition> = Store<State<SD>> & {
-  typedGetters: TypedRootGetters<SD>
+export type TypedStore<SD extends CheckedStoreDefinition> = Omit<Store<State<SD>>, "getters" | "commit" | "dispatch"> & {
+  getters: StoreGetters<SD>
+  commit: StoreCommit<SD>
+  dispatch: StoreDispatch<SD>
 }
 
 /*
@@ -224,10 +294,10 @@ type OnlyNonEmpty<T> = {
 
 type MakeEmptyOptional<T> = OnlyNonEmpty<T> & Partial<OnlyEmpty<T>>;
 
-export type StoreImplementation<SD extends CheckedStoreDefinition> = MakeEmptyOptional<{
+export type StoreImplementation<SD extends CheckedStoreDefinition> = {
   state: StateImplementation<SD>,
   getters: GettersImplementation<SD>,
   mutations: MutationsImplementation<SD>,
   actions: ActionsImplementation<SD>,
   modules: ModulesImplementation<SD>
-}> & (Namespaced<SD> extends true ? { namespaced: true } : { namespaced?: false });
+}; // & (Namespaced<SD> extends true ? { namespaced: true } : { namespaced?: false });

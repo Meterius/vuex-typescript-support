@@ -29,5 +29,5 @@ export const betaStore: StoreImplementation<BetaStoreDefinition> = {
   getters: gettersImplementation,
   mutations: mutationsImplementation,
   actions: actionsImplementation,
-  namespaced: true,
+  modules: {},
 };

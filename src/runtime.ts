@@ -1,18 +1,10 @@
 import {
-  CheckedStoreDefinition,
   StoreImplementation,
-  State,
-  TypedRootGetters,
-  TypedRootDispatch, TypedRootCommit, TypedStore
+  State, TypedStore, CheckedRootStoreDefinition
 } from "./types";
 import { StoreOptions, Store } from "vuex";
 
-type CheckedRootStoreDefinition = CheckedStoreDefinition<any, any, any, any, any, "false">;
-
-type RootStoreImplementation<SD extends CheckedRootStoreDefinition> =
-  Omit<StoreImplementation<SD>, "namespaced"> & { namespaced?: never };
-
-function constructTypedRoot<SD extends CheckedStoreDefinition, R>(
+/*function constructTypedRoot<SD extends CheckedStoreDefinition, R>(
   rootName: string,
   retriever: (globalKey: string, root: R) => any,
   rootRetriever: () => R,
@@ -47,9 +39,9 @@ function constructTypedRoot<SD extends CheckedStoreDefinition, R>(
   );
 
   return base;
-}
+}*/
 
-function constructTypedRootGetters<SD extends CheckedStoreDefinition>(
+/*function constructTypedRootGetters<SD extends CheckedStoreDefinition>(
   rootGettersRetriever: () => any,
   store: RootStoreImplementation<SD>,
   prefix?: string,
@@ -58,23 +50,29 @@ function constructTypedRootGetters<SD extends CheckedStoreDefinition>(
   return constructTypedRoot(
     "getters", (key, root) => root[key], rootGettersRetriever, store, prefix, base,
   );
-}
+}*/
 
 export function buildStoreOptions<
   SD extends CheckedRootStoreDefinition
->(store: RootStoreImplementation<SD>): StoreOptions<State<SD>> {
-  const options: StoreOptions<State<SD>> = {
-    state: store["state"] || {},
-    getters: store["getters"] || {},
-    mutations: store["mutations"] || {},
-    actions: store["actions"] || {},
-    modules: store["modules"] || {},
-  };
-
-  return options;
+>(store: StoreImplementation<SD>): StoreOptions<State<SD>> {
+  return store;
 }
 
-export function buildTypedStore<SD extends CheckedRootStoreDefinition>(
+export function createTypedStore<
+  SD extends CheckedRootStoreDefinition,
+  S extends Store<State<SD>>
+> (
+  storeConstructor: new (options: StoreOptions<S>) => S,
+  storeImplementation: StoreImplementation<SD>
+): TypedStore<SD> {
+  const store = new storeConstructor(
+    buildStoreOptions(storeImplementation)
+  );
+
+  return store as TypedStore<SD>;
+}
+
+/*export function buildTypedStore<SD extends CheckedRootStoreDefinition>(
   store: Store<SD>, storeImplementation: RootStoreImplementation<SD>
 ): TypedStore<SD> {
   return Object.assign(store, {
@@ -82,4 +80,4 @@ export function buildTypedStore<SD extends CheckedRootStoreDefinition>(
       () => store.getters, storeImplementation,
     ),
   });
-}
+}*/

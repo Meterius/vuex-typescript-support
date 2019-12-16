@@ -1,4 +1,6 @@
-import { StoreDefinition } from 'vuex-typescript-support';
+import {StaticTypeErrorCheck, StoreDefinition} from 'vuex-typescript-support';
+import { VuexStoreDefinition } from "@/store";
+import {BetaStoreDefinition} from "@/store/beta/types";
 
 export interface AlphaState {
   varA: boolean;
@@ -21,5 +23,7 @@ export interface AlphaActions {
 }
 
 export type AlphaStoreDefinition = StoreDefinition<
-  AlphaState, AlphaGetters, AlphaMutations, AlphaActions
+  VuexStoreDefinition, AlphaState, AlphaGetters, AlphaMutations, AlphaActions
 >;
+
+const staticTypeCheck: StaticTypeErrorCheck<AlphaStoreDefinition> = true;

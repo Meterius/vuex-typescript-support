@@ -1,4 +1,9 @@
-import { StoreDefinition, TypedRootGetters } from 'vuex-typescript-support';
+import {
+  StaticTypeErrorCheck,
+  StoreCommit,
+  StoreDefinition,
+} from 'vuex-typescript-support';
+import {VuexStoreDefinition} from "@/store";
 
 export interface BetaState {
   t: string;
@@ -18,5 +23,7 @@ export interface BetaActions {
 }
 
 export type BetaStoreDefinition = StoreDefinition<
-  BetaState, BetaGetters, BetaMutations, BetaActions, {}, 'true'
+  VuexStoreDefinition, BetaState, BetaGetters, BetaMutations, BetaActions
 >;
+
+const staticTypeCheck: StaticTypeErrorCheck<BetaStoreDefinition> = true;
