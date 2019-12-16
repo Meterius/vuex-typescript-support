@@ -57,7 +57,8 @@ export type StoreModuleDefinition<
   Modules: MS;
 }
 
-export type Root<SMD extends AnyStoreModuleDefinition> = SMD["Root"];
+export type RootStore<SD extends AnyStoreDefinition | AnyStoreModuleDefinition> =
+  SD extends AnyStoreModuleDefinition ? SD["Root"] : SD;
 export type State<SD extends AnyStoreDefinition | AnyStoreModuleDefinition> = SD["State"];
 export type Getters<SD extends AnyStoreDefinition | AnyStoreModuleDefinition> = SD["Getters"];
 export type Mutations<SD extends AnyStoreDefinition | AnyStoreModuleDefinition> = SD["Mutations"];
