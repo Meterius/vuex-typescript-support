@@ -18,7 +18,7 @@ export type AnyStoreDefinition = StoreDefinition<any, any, any, any, any>;
 
 export type AnyStoreModuleDefinition = StoreModuleDefinition<any, any, any, any, any, any>;
 
-export interface StoreDefinition<
+export type StoreDefinition<
   S extends AnyState,
   G extends AnyGetters,
   M extends AnyMutations,
@@ -26,7 +26,7 @@ export interface StoreDefinition<
   MS extends AnyEquallyRootedModulesDefinition<
     StoreDefinition<S, G, M, A, MS>
   >
-> {
+> = {
   __StoreDefinition: true;
   __StoreModuleDefinition: false;
 
@@ -38,14 +38,14 @@ export interface StoreDefinition<
   Modules: MS;
 }
 
-export interface StoreModuleDefinition<
+export type StoreModuleDefinition<
   R extends AnyStoreDefinition,
   S extends AnyState,
   G extends AnyGetters,
   M extends AnyMutations,
   A extends AnyActions,
   MS extends AnyEquallyRootedModulesDefinition<R>
-> {
+> = {
   __StoreDefinition: false;
   __StoreModuleDefinition: true;
 
