@@ -10,10 +10,11 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 @Component
 export default class HelloWorld extends Vue {
   get display() {
-    return this.$store.typedGetters.varBPlusTwo.toString();
+    return this.$store.getters.varBPlusTwo;
   }
 
-  clickDisplay() {
+  async clickDisplay() {
+    await this.$store.dispatch("add", 5);
   }
 }
 </script>
