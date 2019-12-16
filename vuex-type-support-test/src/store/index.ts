@@ -15,7 +15,7 @@ Vue.use(Vuex);
 export interface VuexStoreDefinition extends RootStoreDefinition<{}, {}, {}, {}, {
   alpha: AlphaStoreDefinition,
   beta: BetaStoreDefinition,
-}> {};
+}> {}
 
 const staticTypeCheck: StaticTypeErrorCheck<VuexStoreDefinition> = true;
 
