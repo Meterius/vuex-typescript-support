@@ -2,24 +2,32 @@ import {HasPayload, Payload, UnionToIntersection} from "./utility-types";
 import {
   Actions,
   AnyStoreDefinition,
-  AnyStoreModuleDefinition, Getters, Modules, Mutations, State
+  AnyStoreModuleDefinition, Getters, Modules, Mutations, RootStore, State
 } from "./definition-types";
 
-export type StoreState<SD extends AnyStoreDefinition> = UnionToIntersection<{
-  readonly [key in keyof Modules<SD>]: StoreState<Modules<SD>[key]>
-}[keyof Modules<SD>]> & State<SD>;
+type _StoreState<SD extends AnyStoreDefinition | AnyStoreModuleDefinition> = UnionToIntersection<{
+  readonly [key in keyof Modules<SD>]: _StoreState<Modules<SD>[key]>
+}[keyof Modules<SD>]> & State<SD>
 
-export type StoreGetters<SD extends AnyStoreDefinition> = UnionToIntersection<{
-  readonly [key in keyof Modules<SD>]: StoreGetters<Modules<SD>[key]>
+export type StoreState<SD extends AnyStoreDefinition> = _StoreState<SD>;
+
+type _StoreGetters<SD extends AnyStoreDefinition | AnyStoreModuleDefinition> = UnionToIntersection<{
+  readonly [key in keyof Modules<SD>]: _StoreGetters<Modules<SD>[key]>
 }[keyof Modules<SD>]> & Getters<SD>;
 
-export type StoreCommit<SD extends AnyStoreDefinition> = UnionToIntersection<{
-  readonly [key in keyof Modules<SD>]: StoreCommit<Modules<SD>[key]>
+export type StoreGetters<SD extends AnyStoreDefinition> = _StoreGetters<SD>;
+
+export type _StoreCommit<SD extends AnyStoreDefinition | AnyStoreModuleDefinition> = UnionToIntersection<{
+  readonly [key in keyof Modules<SD>]: _StoreCommit<Modules<SD>[key]>
 }[keyof Modules<SD>]> & Commit<SD>;
 
-export type StoreDispatch<SD extends AnyStoreDefinition> = UnionToIntersection<{
-  readonly [key in keyof Modules<SD>]: StoreDispatch<Modules<SD>[key]>
+export type StoreCommit<SD extends AnyStoreDefinition> = _StoreCommit<SD>;
+
+export type _StoreDispatch<SD extends AnyStoreDefinition | AnyStoreModuleDefinition> = UnionToIntersection<{
+  readonly [key in keyof Modules<SD>]: _StoreDispatch<Modules<SD>[key]>
 }[keyof Modules<SD>]> & Dispatch<SD>;
+
+export type StoreDispatch<SD extends AnyStoreDefinition> = _StoreDispatch<SD>;
 
 export type Commit<
   SD extends AnyStoreDefinition | AnyStoreModuleDefinition
