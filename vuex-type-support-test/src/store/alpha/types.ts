@@ -1,29 +1,28 @@
-import {StaticTypeErrorCheck, StoreDefinition} from 'vuex-typescript-support';
-import { VuexStoreDefinition } from "@/store";
-import {BetaStoreDefinition} from "@/store/beta/types";
+import {
+  StoreModuleDefinition
+} from "vuex-typescript-support";
+import {RootStoreDefinition} from "@/store";
 
-export interface AlphaState {
+export type AlphaState = {
   varA: boolean;
   varB: number;
 }
 
-export interface AlphaGetters {
+export type AlphaGetters = {
   getAndVarA: (operand: boolean, two: false) => boolean;
   varBPlusTwo: number;
 }
 
-export interface AlphaMutations {
-  toggleVarA(): void;
-  addVarB(x: number): void;
+export type AlphaMutations = {
+  toggleVarA: () => void;
+  addVarB: (x: number) => void;
 }
 
-export interface AlphaActions {
-  toggleVarA(): void;
-  add(x: number): void;
+export type AlphaActions = {
+  toggleVarA: () => void;
+  add: (x: number) => void;
 }
 
-export type AlphaStoreDefinition = StoreDefinition<
-  VuexStoreDefinition, AlphaState, AlphaGetters, AlphaMutations, AlphaActions
+export type AlphaStoreDefinition = StoreModuleDefinition<
+  RootStoreDefinition, AlphaState, AlphaGetters, AlphaMutations, AlphaActions, {}
 >;
-
-const staticTypeCheck: StaticTypeErrorCheck<AlphaStoreDefinition> = true;

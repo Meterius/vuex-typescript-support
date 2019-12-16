@@ -1,9 +1,7 @@
 import {
-  StaticTypeErrorCheck,
-  StoreCommit,
-  StoreDefinition,
+  StoreModuleDefinition,
 } from 'vuex-typescript-support';
-import {VuexStoreDefinition} from "@/store";
+import {RootStoreDefinition} from "@/store";
 
 export interface BetaState {
   t: string;
@@ -14,16 +12,14 @@ export interface BetaGetters {
   t: string;
 }
 
-export interface BetaMutations {
+export type BetaMutations = {
   changeT: (x: number) => void;
 }
 
-export interface BetaActions {
+export type BetaActions = {
   setT: (x: number) => void;
 }
 
-export type BetaStoreDefinition = StoreDefinition<
-  VuexStoreDefinition, BetaState, BetaGetters, BetaMutations, BetaActions
+export type BetaStoreDefinition = StoreModuleDefinition<
+  RootStoreDefinition, BetaState, BetaGetters, BetaMutations, BetaActions, {}
 >;
-
-const staticTypeCheck: StaticTypeErrorCheck<BetaStoreDefinition> = true;

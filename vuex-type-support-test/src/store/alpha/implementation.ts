@@ -3,7 +3,7 @@ import {
   GettersImplementation,
   MutationsImplementation,
   StateImplementation,
-  StoreImplementation,
+  StoreModuleImplementation,
 } from 'vuex-typescript-support';
 import { AlphaStoreDefinition } from '@/store/alpha/types';
 
@@ -27,7 +27,7 @@ export const actionsImplementation: ActionsImplementation<AlphaStoreDefinition> 
   add: ({ commit }, x) => { commit('addVarB', x); },
 };
 
-export const alphaStore: StoreImplementation<AlphaStoreDefinition> = {
+export const alphaStore: StoreModuleImplementation<AlphaStoreDefinition> = {
   state: stateImplementation,
   getters: gettersImplementation,
   mutations: mutationsImplementation,

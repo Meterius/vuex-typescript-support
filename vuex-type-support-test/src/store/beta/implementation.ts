@@ -3,7 +3,7 @@ import {
   GettersImplementation,
   MutationsImplementation,
   StateImplementation,
-  StoreImplementation,
+  StoreImplementation, StoreModuleImplementation,
 } from 'vuex-typescript-support';
 import { BetaStoreDefinition } from '@/store/beta/types';
 
@@ -24,7 +24,7 @@ export const actionsImplementation: ActionsImplementation<BetaStoreDefinition> =
   setT: ({ commit }, x: number) => { commit('changeT', x); },
 };
 
-export const betaStore: StoreImplementation<BetaStoreDefinition> = {
+export const betaStore: StoreModuleImplementation<BetaStoreDefinition> = {
   state: stateImplementation,
   getters: gettersImplementation,
   mutations: mutationsImplementation,

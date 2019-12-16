@@ -5,10 +5,7 @@
     "declaration": true,
     "module": "commonjs",
     "lib": [
-      "es2017",
-      "dom",
-      "dom.iterable",
-      "scripthost"
+      "es2017"
     ],
     "outDir": "dist"
   },

@@ -1,15 +1,15 @@
-import { TypedStore } from "vuex-typescript-support";
-import store from "@/store";
+import { RootStoreDefinition } from "@/store";
 import Vue from "vue";
+import { TypedStore } from "vuex-typescript-support";
 
 declare module "vue/types/options" {
   interface ComponentOptions<V extends Vue> {
-    store?: typeof store;
+    store?: any;
   }
 }
 
 declare module "vue/types/vue" {
   interface Vue {
-    $store: typeof store;
+    $store: TypedStore<RootStoreDefinition>;
   }
 }
