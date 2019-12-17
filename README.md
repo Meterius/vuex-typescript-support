@@ -20,6 +20,11 @@ When defining the States, Getters and so on for the StoreDefinition and StoreMod
 use a Type Alias instead of an Interface to define them, since an Interface can cause the 
 "Index signature is missing in type ..." error on the StoreDefinition or StoreModuleDefinition.
 
+##### "TS2589: Type instantiation is excessively deep and possibly infinite."
+When any is used implicitly or explicitly in a Generic Type Alias it might cause a TS2589 error because some 
+recursive type definitions may not terminate since they could expect the generic parameter to not extend something after
+some amount of recursion.
+
 ## Limitations
 
 Since Typescript does not allow for augmenting keys, it is
