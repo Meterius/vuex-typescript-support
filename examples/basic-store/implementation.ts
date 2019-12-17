@@ -47,7 +47,7 @@ const rootStoreActions: ActionsImplementation<RootStoreDefinition> = {
     // type string and will give a static typescript error if it is not.
     commit('SET_BAR', newBar);
   },
-  setBarAfterOneSec: async ({ dispatch }: ActionContext<any>, newBar: string): Promise<void> => {
+  setBarAfterOneSec: async ({ dispatch }: ActionContext<RootStoreDefinition>, newBar: string): Promise<void> => {
     // wait one second (not implemented in this example)
 
     // Note: Dispatch is always asynchronous even if the action is implement synchronously
