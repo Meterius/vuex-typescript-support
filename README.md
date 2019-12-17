@@ -13,11 +13,12 @@ some useful information for using this package.
 Most of the used generic types are self explanatory and
 all exported ones can be found in the src/index.ts file.
 
-## Errors
+## Common Errors
 
-When defining a StoreDefinition or StoreModuleDefinition the fields that
-are specified should use type instead of interface to implement their fields
-as otherwise the error "Index signature is missing in type ..." can occur.
+##### "Index signature is missing in type ...":
+When defining the States, Getters and so on for the StoreDefinition and StoreModuleDefinition,
+use a Type Alias instead of an Interface to define them, since an Interface can cause the 
+"Index signature is missing in type ..." error on the StoreDefinition or StoreModuleDefinition.
 
 ## Limitations
 
