@@ -23,12 +23,22 @@ export type AnyEquallyRootedStoreModuleDefinition<
   Modules: any;
 }>;
 
-export type AnyStoreDefinition = StoreDefinition<
-  StoreDefinitionParameters<any, any, any, any, any>
->;
+export type AnyStoreDefinition = StoreDefinition<AnyStoreDefinitionParameters>;
 
 export type AnyStoreModuleDefinition = StoreModuleDefinition<
   StoreModuleDefinitionParameters<any, any, any, any, any, any>
+>;
+
+type AnyStoreModuleDefinitionParameters = StoreModuleDefinitionParameters<
+  AnyStoreDefinition, AnyState, AnyGetters, AnyMutations, AnyActions, AnyEquallyRootedModulesDefinition<
+    AnyStoreDefinition
+  >
+>;
+
+type AnyStoreDefinitionParameters = StoreDefinitionParameters<
+  AnyState, AnyGetters, AnyMutations, AnyActions, AnyEquallyRootedModulesDefinition<
+    AnyStoreDefinition
+  >
 >;
 
 export interface StoreDefinitionParameters<
@@ -48,7 +58,7 @@ export interface StoreDefinitionParameters<
 }
 
 export type StoreDefinition<
-  P extends StoreDefinitionParameters<any, any, any, any, any>
+  P extends AnyStoreDefinitionParameters
 > = {
   __StoreDefinition: true;
   __StoreModuleDefinition: false;

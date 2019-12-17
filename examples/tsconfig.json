@@ -1,0 +1,12 @@
+{
+  "compileOnSave": true,
+  "compilerOptions": {
+    "noEmit": true,
+    "target": "es2017",
+    "module": "commonjs",
+    "strict": true,
+    "lib": [
+      "es2017"
+    ]
+  }
+}
