@@ -33,6 +33,9 @@ currently not possible to implement namespaced modules behaviour
 behaviour). Therefore at the moment only not namespaced modules are allowed.
 
 
+RegisterModule and UnregisterModule are not accessible since dynamic modules cannot be
+typed statically. (although technically the methods still exist on the store object)
+
 Commit and Dispatch will not accept the payloadWithType syntax and will always require them as separate
 parameters. While the support of the payloadWithType signature is easily implemented, it will greatly
 reduce the readability of Typescript errors since there are many more overloads and signature styles
