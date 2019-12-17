@@ -5,8 +5,8 @@ import {
 } from "vuex";
 import {
   AnyStoreDefinition,
-  SomeActionsPayloadWithType,
-  SomeMutationsPayloadWithType,
+  SomeActionPayloadWithType,
+  SomeMutationPayloadWithType,
   StoreCommit,
   StoreDispatch,
   StoreGetters,
@@ -20,10 +20,10 @@ import { Overwrite } from "./utility-types";
  */
 
 export type MutationSubscriber<SD extends AnyStoreDefinition> =
-  (mutation: SomeMutationsPayloadWithType<SD>, state: StoreState<SD>) => any;
+  (mutation: SomeMutationPayloadWithType<SD>, state: StoreState<SD>) => any;
 
 export type ActionSubscriber<SD extends AnyStoreDefinition> =
-  (action: SomeActionsPayloadWithType<SD>, state: StoreState<SD>) => any;
+  (action: SomeActionPayloadWithType<SD>, state: StoreState<SD>) => any;
 
 export interface ActionSubscribersObject<SD extends AnyStoreDefinition> {
   before?: ActionSubscriber<SD>;
