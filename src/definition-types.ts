@@ -201,7 +201,7 @@ export type Dispatch<
   <ActionName extends keyof Actions<SD>>(
     action: ActionName,
     payload: Payload<Actions<SD>[ActionName]>,
-    options: BaseDispatchOptions & { root?: false }
+    options?: BaseDispatchOptions & { root?: false }
   ): Promise<void>;
 
   <StoreActionName extends keyof StoreActions<SD>>(
