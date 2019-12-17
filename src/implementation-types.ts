@@ -16,7 +16,8 @@ import {
   Commit,
   Dispatch
 } from "./definition-types";
-import {Store, StoreOptions} from "vuex";
+import { Store, StoreOptions } from "vuex";
+import { TypedStore } from "./typed-store";
 
 /*
     State Implementation
@@ -103,5 +104,5 @@ export type StoreImplementation<SD extends AnyStoreDefinition> =
   actions: ActionsImplementation<SD>;
   modules: ModulesImplementation<SD>;
 
-  plugins?: ((store: StoreImplementation<SD>) => void)[];
+  plugins?: ((store: TypedStore<SD>) => void)[];
 }>;
