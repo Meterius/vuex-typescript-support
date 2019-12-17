@@ -13,10 +13,16 @@ import { BetaStoreDefinition } from '@/store/beta/types';
 Vue.use(Vuex);
 
 export type RootStoreDefinition = StoreDefinition<{
-  a: number
-}, {}, {}, {}, {
-  alpha: AlphaStoreDefinition,
-  beta: BetaStoreDefinition,
+  State: {
+    a: number
+  };
+  Getters: {};
+  Mutations: {};
+  Actions: {};
+  Modules: {
+    alpha: AlphaStoreDefinition,
+    beta: BetaStoreDefinition,
+  };
 }>;
 
 const rootStoreImplementation: StoreImplementation<RootStoreDefinition> = {

@@ -20,6 +20,11 @@ export type BetaActions = {
   setT: (x: number) => void;
 }
 
-export type BetaStoreDefinition = StoreModuleDefinition<
-  RootStoreDefinition, BetaState, BetaGetters, BetaMutations, BetaActions, {}
->;
+export type BetaStoreDefinition = StoreModuleDefinition<{
+  Store: RootStoreDefinition;
+  State: BetaState;
+  Getters: BetaGetters;
+  Mutations: BetaMutations;
+  Actions: BetaActions;
+  Modules: {};
+}>;

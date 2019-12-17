@@ -14,49 +14,80 @@ export type AnyEquallyRootedModulesDefinition<
 
 export type AnyEquallyRootedStoreModuleDefinition<
   R extends AnyStoreDefinition,
-> = StoreModuleDefinition<R, any, any, any, any, any>;
+> = StoreModuleDefinition<{
+  Store: R;
+  State: any;
+  Getters: any;
+  Mutations: any;
+  Actions: any;
+  Modules: any;
+}>;
 
-export type AnyStoreDefinition = StoreDefinition<any, any, any, any, any>;
+export type AnyStoreDefinition = StoreDefinition<
+  StoreDefinitionParameters<any, any, any, any, any>
+>;
 
-export type AnyStoreModuleDefinition = StoreModuleDefinition<any, any, any, any, any, any>;
+export type AnyStoreModuleDefinition = StoreModuleDefinition<
+  StoreModuleDefinitionParameters<any, any, any, any, any, any>
+>;
 
-export type StoreDefinition<
+export interface StoreDefinitionParameters<
   S extends AnyState,
   G extends AnyGetters,
   M extends AnyMutations,
   A extends AnyActions,
   MS extends AnyEquallyRootedModulesDefinition<
-    StoreDefinition<S, G, M, A, MS>
+    StoreDefinition<StoreDefinitionParameters<S, G, M, A, MS>>
   >
-> = {
-  __StoreDefinition: true;
-  __StoreModuleDefinition: false;
-
+> {
   State: S;
   Getters: G;
   Mutations: M;
   Actions: A;
-
   Modules: MS;
 }
 
-export type StoreModuleDefinition<
+export type StoreDefinition<
+  P extends StoreDefinitionParameters<any, any, any, any, any>
+> = {
+  __StoreDefinition: true;
+  __StoreModuleDefinition: false;
+
+  State: P["State"];
+  Getters: P["Getters"];
+  Mutations: P["Mutations"];
+  Actions: P["Actions"];
+  Modules: P["Modules"];
+}
+
+export interface StoreModuleDefinitionParameters<
   R extends AnyStoreDefinition,
   S extends AnyState,
   G extends AnyGetters,
   M extends AnyMutations,
   A extends AnyActions,
   MS extends AnyEquallyRootedModulesDefinition<R>
-> = {
-  __StoreDefinition: false;
-  __StoreModuleDefinition: true;
-
-  Root: R;
+  > {
+  Store: R;
   State: S;
   Getters: G;
   Mutations: M;
   Actions: A;
   Modules: MS;
+}
+
+export type StoreModuleDefinition<
+  P extends StoreModuleDefinitionParameters<any, any, any, any, any, any>
+  > = {
+  __StoreDefinition: false;
+  __StoreModuleDefinition: true;
+
+  Store: P["Store"];
+  State: P["State"];
+  Getters: P["Getters"];
+  Mutations: P["Mutations"];
+  Actions: P["Actions"];
+  Modules: P["Modules"];
 }
 
 /*
@@ -64,7 +95,7 @@ export type StoreModuleDefinition<
  */
 
 export type RootStore<SD extends AnyStoreDefinition | AnyStoreModuleDefinition> =
-  SD extends AnyStoreModuleDefinition ? SD["Root"] : SD;
+  SD extends AnyStoreModuleDefinition ? SD["Store"] : SD;
 export type State<SD extends AnyStoreDefinition | AnyStoreModuleDefinition> = SD["State"];
 export type Getters<SD extends AnyStoreDefinition | AnyStoreModuleDefinition> = SD["Getters"];
 export type Mutations<SD extends AnyStoreDefinition | AnyStoreModuleDefinition> = SD["Mutations"];

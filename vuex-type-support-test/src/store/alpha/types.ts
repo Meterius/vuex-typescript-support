@@ -23,6 +23,11 @@ export type AlphaActions = {
   add: (x: number) => void;
 }
 
-export type AlphaStoreDefinition = StoreModuleDefinition<
-  RootStoreDefinition, AlphaState, AlphaGetters, AlphaMutations, AlphaActions, {}
->;
+export type AlphaStoreDefinition = StoreModuleDefinition<{
+  Store: RootStoreDefinition;
+  State: AlphaState;
+  Getters: AlphaGetters;
+  Mutations: AlphaMutations;
+  Actions: AlphaActions;
+  Modules: {};
+}>;
