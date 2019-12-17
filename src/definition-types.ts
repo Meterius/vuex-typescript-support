@@ -1,4 +1,5 @@
-import {KeysWithoutPayload, Payload, UnionToIntersection} from "./utility-types";
+import { KeysWithoutPayload, Payload, UnionToIntersection } from "./utility-types";
+import { CommitOptions, DispatchOptions } from "vuex";
 
 export type AnyMutation = (() => void) | ((payload: any) => void);
 export type AnyAction = (() => Promise<void> | void) | ((payload: any) => Promise<void> | void);
@@ -144,73 +145,117 @@ export type StoreActions<SD extends AnyStoreDefinition | AnyStoreModuleDefinitio
     Commit and Dispatch Definitions
  */
 
-type BaseCommitOptions = { silent?: boolean };
-type BaseDispatchOptions = {};
+// type TypeAndPayloadOption<T, P> = {
+//   type: T;
+// } & (undefined extends P ? {
+//   payload?: P;
+// } : {
+//   payload: P;
+// });
+
+type BaseCommitOptions = Omit<CommitOptions, "root">;
+type BaseDispatchOptions = Omit<DispatchOptions, "root">;
 
 export type StoreCommit<
   SD extends AnyStoreDefinition | AnyStoreModuleDefinition
   > = {
   <StoreMutationName extends keyof StoreMutations<SD>>(
-    mutation: StoreMutationName,
+    type: StoreMutationName,
     payload: Payload<StoreMutations<SD>[StoreMutationName]>,
     options?: BaseCommitOptions & { root?: boolean }
   ): void;
+  // <StoreMutationName extends keyof StoreMutations<SD>>(
+  //   payloadWithType: TypeAndPayloadOption<StoreMutationName, Payload<StoreMutations<SD>[StoreMutationName]>>,
+  //   options?: BaseCommitOptions & { root?: boolean }
+  // ): void;
 
   <StoreMutationName extends KeysWithoutPayload<StoreMutations<SD>>>(
-    mutation: StoreMutationName
+    payloadWithType: StoreMutationName
   ): void;
+  // <StoreMutationName extends KeysWithoutPayload<StoreMutations<SD>>>(
+  //   payloadWithType: TypeAndPayloadOption<StoreMutationName, undefined>
+  // ): void;
 };
 
 export type StoreDispatch<
   SD extends AnyStoreDefinition | AnyStoreModuleDefinition
   > = {
   <StoreActionName extends keyof StoreActions<SD>>(
-    action: StoreActionName,
+    type: StoreActionName,
     payload: Payload<StoreActions<SD>[StoreActionName]>,
     options?: BaseDispatchOptions & { root?: boolean }
-  ): void;
+  ): Promise<void>;
+  // <StoreActionName extends keyof StoreActions<SD>>(
+  //   payloadWithType: TypeAndPayloadOption<StoreActionName, Payload<StoreActions<SD>[StoreActionName]>>,
+  //   options?: BaseDispatchOptions & { root?: boolean }
+  // ): Promise<void>;
 
   <StoreActionName extends KeysWithoutPayload<StoreActions<SD>>>(
-    action: StoreActionName
+    type: StoreActionName
   ): Promise<void>;
+  // <StoreActionName extends KeysWithoutPayload<StoreActions<SD>>>(
+  //   payloadWithType: TypeAndPayloadOption<StoreActionName, undefined>
+  // ): Promise<void>;
 };
 
 export type Commit<
   SD extends AnyStoreDefinition | AnyStoreModuleDefinition
   > = {
   <MutationName extends keyof Mutations<SD>>(
-    mutation: MutationName,
+    type: MutationName,
     payload: Payload<Mutations<SD>[MutationName]>,
     options?: BaseCommitOptions & { root?: false }
   ): void;
+  // <MutationName extends keyof Mutations<SD>>(
+  //   payloadWithType: TypeAndPayloadOption<MutationName, Payload<Mutations<SD>[MutationName]>>,
+  //   options?: BaseCommitOptions & { root?: false }
+  // ): void;
 
   <StoreMutationName extends keyof StoreMutations<SD>>(
-    mutation: StoreMutationName,
+    type: StoreMutationName,
     payload: Payload<StoreMutations<SD>[StoreMutationName]>,
     options: BaseCommitOptions & { root: true }
   ): void;
+  // <StoreMutationName extends keyof StoreMutations<SD>>(
+  //   payloadWithType: TypeAndPayloadOption<StoreMutationName, Payload<StoreMutations<SD>[StoreMutationName]>>,
+  //   options: BaseCommitOptions & { root: true }
+  // ): void;
 
   <MutationName extends KeysWithoutPayload<Mutations<SD>>>(
-    mutation: MutationName
+    type: MutationName
   ): void;
+  // <MutationName extends KeysWithoutPayload<Mutations<SD>>>(
+  //   payloadWithType: TypeAndPayloadOption<MutationName, undefined>
+  // ): void;
 };
 
 export type Dispatch<
   SD extends AnyStoreDefinition | AnyStoreModuleDefinition
   > = {
   <ActionName extends keyof Actions<SD>>(
-    action: ActionName,
+    type: ActionName,
     payload: Payload<Actions<SD>[ActionName]>,
     options?: BaseDispatchOptions & { root?: false }
   ): Promise<void>;
+  // <ActionName extends keyof Actions<SD>>(
+  //   payloadWithType: TypeAndPayloadOption<ActionName, Payload<Actions<SD>[ActionName]>>,
+  //   options?: BaseDispatchOptions & { root?: false }
+  // ): Promise<void>;
 
   <StoreActionName extends keyof StoreActions<SD>>(
-    action: StoreActionName,
+    type: StoreActionName,
     payload: Payload<StoreActions<SD>[StoreActionName]>,
     options: BaseDispatchOptions & { root: true }
-  ): void;
+  ): Promise<void>;
+  // <StoreActionName extends keyof StoreActions<SD>>(
+  //   payloadWithType: TypeAndPayloadOption<StoreActionName, Payload<StoreActions<SD>[StoreActionName]>>,
+  //   options: BaseDispatchOptions & { root: true }
+  // ): Promise<void>;
 
   <ActionName extends KeysWithoutPayload<Actions<SD>>>(
-    action: ActionName
+    type: ActionName
   ): Promise<void>;
+  // <ActionName extends KeysWithoutPayload<Actions<SD>>>(
+  //   payloadWithType: TypeAndPayloadOption<ActionName, undefined>
+  // ): Promise<void>;
 };

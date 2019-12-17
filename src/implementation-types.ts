@@ -1,4 +1,8 @@
-import {HasPayload, KeysWithoutPayload, Payload, UnionToIntersection} from "./utility-types";
+import {
+  HasPayload,
+  Overwrite,
+  Payload,
+} from "./utility-types";
 import {
   Actions,
   AnyStoreDefinition,
@@ -12,7 +16,7 @@ import {
   Commit,
   Dispatch
 } from "./definition-types";
-import { StoreOptions } from "vuex";
+import {Store, StoreOptions} from "vuex";
 
 /*
     State Implementation
@@ -91,7 +95,8 @@ export type StoreModuleImplementation<SD extends AnyStoreModuleDefinition> = {
     Store Implementation
  */
 
-export type StoreImplementation<SD extends AnyStoreDefinition> = {
+export type StoreImplementation<SD extends AnyStoreDefinition> =
+  Overwrite<StoreOptions<Store<any>>, {
   state: StateImplementation<SD>;
   getters: GettersImplementation<SD>;
   mutations: MutationsImplementation<SD>;
@@ -99,4 +104,4 @@ export type StoreImplementation<SD extends AnyStoreDefinition> = {
   modules: ModulesImplementation<SD>;
 
   plugins?: ((store: StoreImplementation<SD>) => void)[];
-} & Omit<StoreOptions<StoreState<SD>>, "state" | "getters" | "mutations" | "actions" | "modules" | "plugins">;
+}>;

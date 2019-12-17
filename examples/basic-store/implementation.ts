@@ -37,8 +37,22 @@ const rootStoreActions: ActionsImplementation<RootStoreDefinition> = {
   resetFooToOne: ({ commit }: ActionContext<RootStoreDefinition>) => {
     // Note: Mutations without payload can be called on commit without the payload specified,
     // or the payload set to undefined (in case commit options are required to be specified)
-    commit('RESET_FOO');
-    commit('INCREMENT_FOO', undefined);
+    // and the payloadWithType call signature is also still available on dispatch and commit
+    commit('RESET_FOO'); // equivalent to commit('RESET_FOO', undefined)
+    commit('INCREMENT_FOO');
+
+    // Note: When the specified mutation or action does exist but the payload is not specified
+    // even though the payload is needed it will try to match it to an overload using only one
+    // parameter which can only be mutations with no payload which is why
+    // commit('SET_BAR')
+    // will evaluate to the error 'SET_BAR' is not assignable to 'RESET_FOO' | 'INCREMENT_FOO'
+    // since these are mutations where payload does not have to be specified
+    // These kinds of error messages result from Typescript always trying to match overloads
+    // first with the same amount of parameters
+
+    // This is also the reason why the payloadWithType signature which is easily implemented
+    // is not allowed since it makes the Typescript errors of mismatched payload types or miss spellings
+    // much much more cryptic
   },
   setBar: ({ commit }: ActionContext<RootStoreDefinition>, newBar: string) => {
     // Note: In commit as well as dispatch only names that are actually defined are possible
