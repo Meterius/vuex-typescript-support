@@ -25,8 +25,21 @@ const nestedModuleMutations: MutationsImplementation<NestedModuleDefinition> = {
 };
 
 const nestedModuleActions: ActionsImplementation<NestedModuleDefinition> = {
-  setBazAndBar: ({ commit, rootGetters }: ActionContext<NestedModuleDefinition>) => {
-    commit('SET_BAZ', rootGetters.getBarWithSuffix(""));
+  setBazToBar: ({ commit, rootGetters }) => {
+    // Note: getBarWithSuffix is a getter from another store / store module and is therefore only accessible
+    // via a root getter, which is contained in the ActionContext (this also holds for rootState,
+    // which is accessible in actions via the ActionContext and in mutations as a separate parameter)
+    commit('SET_BAZ', rootGetters.getBarWithSuffix(""), { root: true });
+  },
+  setBazAndBar: async (
+    { commit }: ActionContext<NestedModuleDefinition>,
+    { baz, bar }
+  ): Promise<void> => {
+    commit('SET_BAZ', baz);
+
+    // Note: SET_BAR is a mutation from another store / store module and is therefore only accessible via
+    // a root commit call, which is also properly typed (this also holds for dispatch)
+    commit('SET_BAR', bar, { root: true });
   },
 };
 

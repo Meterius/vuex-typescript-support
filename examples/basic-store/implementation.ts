@@ -77,15 +77,26 @@ const rootStoreImplementation: StoreImplementation<RootStoreDefinition> = {
   modules: {
     nestedModule: nestedModuleImplementation,
   },
+  // Note: The plugins array is also completely typed
+  plugins: [(store) => {
+    store.subscribe((mutation) => {
+      if(mutation.type === 'SET_BAR'){
+        // Note: Mutation is a payloadWithType and completely typed, therefore Typescript can infer
+        // the type of mutation.payload if mutation.type has been tested
+        const newBar: string = mutation.payload;
+
+        console.log(`New Bar: ${newBar}`);
+      }
+    });
+  }]
 };
 
 // Note: The constructor of the used Vuex Store is required since
 // an error will be thrown if it is used directly in the library.
-// Note: The TypedStore is a generic type that will automatically
-// infer the store definition type if the implementation parameter
-// is typed in createTypedStore.
-// But to ensure no unforeseen errors occur, it is safer to explicitly
-// say which type of store is used.
+
+// Note: The createTypedStore cannot correctly infer the StoreDefinition without inserting
+// an any which will cause a TS2589 Typescript error, therefore it is required to explicitly
+// set what definition is implemented
 // (The created store is currently technically identical to the one created with
 // new Vuex.Store(rootStoreImplementation) but ensures its type)
 export default createTypedStore<RootStoreDefinition>(

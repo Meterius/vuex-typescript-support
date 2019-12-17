@@ -38,6 +38,6 @@ const rootStoreImplementation: StoreImplementation<RootStoreDefinition> = {
   },
 };
 
-export default createTypedStore(
+export default createTypedStore<RootStoreDefinition>(
   Vuex.Store, rootStoreImplementation
-)
+);
