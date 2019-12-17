@@ -145,6 +145,14 @@ export type StoreActions<SD extends AnyStoreDefinition | AnyStoreModuleDefinitio
     Commit and Dispatch Definitions
  */
 
+export type SomeMutationsPayloadWithType<SD extends AnyStoreDefinition> = {
+  [key in keyof StoreMutations<SD>]: PayloadWithType<key, Payload<StoreMutations<SD>[key]>>
+}[keyof StoreMutations<SD>];
+
+export type SomeActionsPayloadWithType<SD extends AnyStoreDefinition> = {
+  [key in keyof StoreActions<SD>]: PayloadWithType<key, Payload<StoreActions<SD>[key]>>
+}[keyof StoreActions<SD>];
+
 export type PayloadWithType<T, P> = {
    type: T;
 } & (undefined extends P ? {
