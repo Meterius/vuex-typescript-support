@@ -25,6 +25,13 @@ When any is used implicitly or explicitly in a Generic Type Alias it might cause
 recursive type definitions may not terminate since they could expect the generic parameter to not extend something after
 some amount of recursion.
 
+If the error occurs at the createTypeStore call it is probably due to not explicitly
+settings the createTypeStore generic parameter to the used StoreDefinition 
+(see example/basic-store/implementation.ts for an example)
+
+In general if the error occurs at any generic type alias or generic function you probably
+need to explicitly fill in the generic parameter.
+
 ## Limitations
 
 Since Typescript does not allow for augmenting keys, it is
