@@ -4,14 +4,14 @@ import store from "../implementation";
 declare module "vue/types/options" {
   interface ComponentOptions<V extends Vue> {
     // currently required since otherwise at the constructor
-    // the depth of recursion in the type definitions will exceed
-    // the currently hard coded limit in typescript
+    // of vue a typescript error might occur
     store?: any;
   }
 }
 
 declare module "vue/types/vue" {
   interface Vue {
+    // this will
     $store: typeof store;
   }
 }

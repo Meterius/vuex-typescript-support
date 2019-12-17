@@ -13,16 +13,21 @@ some useful information for using this package.
 Most of the used generic types are self explanatory and
 all exported ones can be found in the src/index.ts file.
 
+## Errors
+
+When defining a StoreDefinition or StoreModuleDefinition the fields that
+are specified should use type instead of interface to implement their fields
+as otherwise the error "Index signature is missing in type ..." can occur.
+
 ## Limitations
 
-As typescript does not allow for augmenting keys, it is
+Since Typescript does not allow for augmenting keys, it is
 currently not possible to implement namespaced modules behaviour
-without adding a different getter style with different runtime
-behaviour. Therefore at the moment only non namespaced modules are allowed.
+(Without adding a different getter style with different runtime
+behaviour). Therefore at the moment only not namespaced modules are allowed.
 
 
-Due to the recursive and complex nature of the generic types
-used to implement all the required typings, it seemingly often
-happens that one runs into the "TS2589: Type instantiation is excessively deep and possibly infinite."
-typescript error. This is due to the hard coded limit of a maximum recursion depth of
-50 typescript enforces. (This might be configurable in Typescript 3.8)
+Due to the recursive definition and usage of conditional types in the types
+used, the error "TS2589: Type instantiation is excessively deep and possibly infinite."
+can occur which usually means somewhere "any" was used and some recursively defined generic type is
+not terminating.
