@@ -4,8 +4,12 @@
     "target": "es2017",
     "declaration": true,
     "module": "commonjs",
+    "strict": true,
     "lib": [
-      "es2017"
+      "es2017",
+      "dom",
+      "dom.iterable",
+      "scripthost"
     ],
     "outDir": "dist"
   },
