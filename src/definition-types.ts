@@ -145,13 +145,13 @@ export type StoreActions<SD extends AnyStoreDefinition | AnyStoreModuleDefinitio
     Commit and Dispatch Definitions
  */
 
-// type TypeAndPayloadOption<T, P> = {
-//   type: T;
-// } & (undefined extends P ? {
-//   payload?: P;
-// } : {
-//   payload: P;
-// });
+export type PayloadWithType<T, P> = {
+   type: T;
+} & (undefined extends P ? {
+   payload?: P;
+} : {
+   payload: P;
+});
 
 type BaseCommitOptions = Omit<CommitOptions, "root">;
 type BaseDispatchOptions = Omit<DispatchOptions, "root">;
@@ -165,7 +165,7 @@ export type StoreCommit<
     options?: BaseCommitOptions & { root?: boolean }
   ): void;
   // <StoreMutationName extends keyof StoreMutations<SD>>(
-  //   payloadWithType: TypeAndPayloadOption<StoreMutationName, Payload<StoreMutations<SD>[StoreMutationName]>>,
+  //   payloadWithType: PayloadWithType<StoreMutationName, Payload<StoreMutations<SD>[StoreMutationName]>>,
   //   options?: BaseCommitOptions & { root?: boolean }
   // ): void;
 
@@ -173,7 +173,7 @@ export type StoreCommit<
     payloadWithType: StoreMutationName
   ): void;
   // <StoreMutationName extends KeysWithoutPayload<StoreMutations<SD>>>(
-  //   payloadWithType: TypeAndPayloadOption<StoreMutationName, undefined>
+  //   payloadWithType: PayloadWithType<StoreMutationName, undefined>
   // ): void;
 };
 
@@ -186,7 +186,7 @@ export type StoreDispatch<
     options?: BaseDispatchOptions & { root?: boolean }
   ): Promise<void>;
   // <StoreActionName extends keyof StoreActions<SD>>(
-  //   payloadWithType: TypeAndPayloadOption<StoreActionName, Payload<StoreActions<SD>[StoreActionName]>>,
+  //   payloadWithType: PayloadWithType<StoreActionName, Payload<StoreActions<SD>[StoreActionName]>>,
   //   options?: BaseDispatchOptions & { root?: boolean }
   // ): Promise<void>;
 
@@ -194,7 +194,7 @@ export type StoreDispatch<
     type: StoreActionName
   ): Promise<void>;
   // <StoreActionName extends KeysWithoutPayload<StoreActions<SD>>>(
-  //   payloadWithType: TypeAndPayloadOption<StoreActionName, undefined>
+  //   payloadWithType: PayloadWithType<StoreActionName, undefined>
   // ): Promise<void>;
 };
 
@@ -207,7 +207,7 @@ export type Commit<
     options?: BaseCommitOptions & { root?: false }
   ): void;
   // <MutationName extends keyof Mutations<SD>>(
-  //   payloadWithType: TypeAndPayloadOption<MutationName, Payload<Mutations<SD>[MutationName]>>,
+  //   payloadWithType: PayloadWithType<MutationName, Payload<Mutations<SD>[MutationName]>>,
   //   options?: BaseCommitOptions & { root?: false }
   // ): void;
 
@@ -217,7 +217,7 @@ export type Commit<
     options: BaseCommitOptions & { root: true }
   ): void;
   // <StoreMutationName extends keyof StoreMutations<SD>>(
-  //   payloadWithType: TypeAndPayloadOption<StoreMutationName, Payload<StoreMutations<SD>[StoreMutationName]>>,
+  //   payloadWithType: PayloadWithType<StoreMutationName, Payload<StoreMutations<SD>[StoreMutationName]>>,
   //   options: BaseCommitOptions & { root: true }
   // ): void;
 
@@ -225,7 +225,7 @@ export type Commit<
     type: MutationName
   ): void;
   // <MutationName extends KeysWithoutPayload<Mutations<SD>>>(
-  //   payloadWithType: TypeAndPayloadOption<MutationName, undefined>
+  //   payloadWithType: PayloadWithType<MutationName, undefined>
   // ): void;
 };
 
@@ -238,7 +238,7 @@ export type Dispatch<
     options?: BaseDispatchOptions & { root?: false }
   ): Promise<void>;
   // <ActionName extends keyof Actions<SD>>(
-  //   payloadWithType: TypeAndPayloadOption<ActionName, Payload<Actions<SD>[ActionName]>>,
+  //   payloadWithType: PayloadWithType<ActionName, Payload<Actions<SD>[ActionName]>>,
   //   options?: BaseDispatchOptions & { root?: false }
   // ): Promise<void>;
 
@@ -248,7 +248,7 @@ export type Dispatch<
     options: BaseDispatchOptions & { root: true }
   ): Promise<void>;
   // <StoreActionName extends keyof StoreActions<SD>>(
-  //   payloadWithType: TypeAndPayloadOption<StoreActionName, Payload<StoreActions<SD>[StoreActionName]>>,
+  //   payloadWithType: PayloadWithType<StoreActionName, Payload<StoreActions<SD>[StoreActionName]>>,
   //   options: BaseDispatchOptions & { root: true }
   // ): Promise<void>;
 
@@ -256,6 +256,6 @@ export type Dispatch<
     type: ActionName
   ): Promise<void>;
   // <ActionName extends KeysWithoutPayload<Actions<SD>>>(
-  //   payloadWithType: TypeAndPayloadOption<ActionName, undefined>
+  //   payloadWithType: PayloadWithType<ActionName, undefined>
   // ): Promise<void>;
 };
