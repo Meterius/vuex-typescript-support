@@ -1,6 +1,6 @@
 import {Store, StoreOptions} from "vuex";
-import {StoreCommit, StoreDispatch, StoreGetters, StoreImplementation, StoreState} from "./implementation-types";
-import {AnyStoreDefinition, State} from "./definition-types";
+import {AnyStoreDefinition, State, StoreCommit, StoreDispatch, StoreGetters, StoreState} from "./definition-types";
+import {StoreImplementation} from "./implementation-types";
 
 export type TypedStore<SD extends AnyStoreDefinition> = Omit<Store<any>, "state" | "getters" | "commit" | "dispatch"> & {
   readonly state: StoreState<SD>;

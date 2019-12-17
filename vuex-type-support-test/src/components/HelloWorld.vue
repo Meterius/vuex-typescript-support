@@ -14,7 +14,7 @@ export default class HelloWorld extends Vue {
   }
 
   async clickDisplay() {
-    await this.$store.dispatch("add", 5);
+    await this.$store.dispatch("add", 5, { root: true });
   }
 }
 </script>

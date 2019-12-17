@@ -6,6 +6,13 @@ export {
   Actions,
   Modules,
   Mutations,
+  Commit,
+  Dispatch,
+  StoreDispatch,
+  StoreCommit,
+  StoreGetters,
+  StoreActions,
+  StoreMutations,
 } from "./definition-types";
 
 export {
@@ -17,8 +24,6 @@ export {
   ModulesImplementation,
   StoreImplementation,
   ActionContext,
-  Commit,
-  Dispatch,
 } from "./implementation-types";
 
 export {
