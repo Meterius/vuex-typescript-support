@@ -9,37 +9,20 @@ export type AnyGetters = { [key: string]: any };
 export type AnyMutations = { [key: string]: AnyMutation };
 export type AnyActions = { [key: string]: AnyMutation };
 
-export type AnyEquallyRootedModulesDefinition<
-  R extends AnyStoreDefinition
-> = { [key: string]: AnyEquallyRootedStoreModuleDefinition<R> };
-
-export type AnyEquallyRootedStoreModuleDefinition<
-  R extends AnyStoreDefinition,
-> = StoreModuleDefinition<{
-  Store: R;
-  State: any;
-  Getters: any;
-  Mutations: any;
-  Actions: any;
-  Modules: any;
-}>;
+export type AnyModulesDefinition= { [key: string]: AnyStoreModuleDefinition };
 
 export type AnyStoreDefinition = StoreDefinition<AnyStoreDefinitionParameters>;
 
 export type AnyStoreModuleDefinition = StoreModuleDefinition<
-  StoreModuleDefinitionParameters<any, any, any, any, any, any>
+  AnyStoreModuleDefinitionParameters
 >;
 
 type AnyStoreModuleDefinitionParameters = StoreModuleDefinitionParameters<
-  AnyStoreDefinition, AnyState, AnyGetters, AnyMutations, AnyActions, AnyEquallyRootedModulesDefinition<
-    AnyStoreDefinition
-  >
+  AnyStoreDefinition, AnyState, AnyGetters, AnyMutations, AnyActions, AnyModulesDefinition
 >;
 
 type AnyStoreDefinitionParameters = StoreDefinitionParameters<
-  AnyState, AnyGetters, AnyMutations, AnyActions, AnyEquallyRootedModulesDefinition<
-    AnyStoreDefinition
-  >
+  AnyState, AnyGetters, AnyMutations, AnyActions, AnyModulesDefinition
 >;
 
 export interface StoreDefinitionParameters<
@@ -47,9 +30,7 @@ export interface StoreDefinitionParameters<
   G extends AnyGetters,
   M extends AnyMutations,
   A extends AnyActions,
-  MS extends AnyEquallyRootedModulesDefinition<
-    StoreDefinition<StoreDefinitionParameters<S, G, M, A, MS>>
-  >
+  MS extends AnyModulesDefinition,
 > {
   State: S;
   Getters: G;
@@ -77,7 +58,7 @@ export interface StoreModuleDefinitionParameters<
   G extends AnyGetters,
   M extends AnyMutations,
   A extends AnyActions,
-  MS extends AnyEquallyRootedModulesDefinition<R>
+  MS extends AnyModulesDefinition,
   > {
   Store: R;
   State: S;
