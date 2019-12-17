@@ -59,3 +59,7 @@ Most behaviour of Vuex is typed properly and is not limited by the introduced ty
 But it may be the case that some part of Vuex is still not properly typed or is even restricted by
 the introduced types. This might especially be the case when newer versions of Vuex add new options,
 since not all types use the Vuex defined options to define themselves.
+
+Currently the StoreModuleDefinitions within one Store are not type checked for having the same (Root)StoreDefinition and
+and the one in which they are contained in, this is just assumed to be configured correctly.
+But this should be enforced by a future version.
