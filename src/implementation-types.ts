@@ -12,6 +12,7 @@ import {
   Commit,
   Dispatch
 } from "./definition-types";
+import { StoreOptions } from "vuex";
 
 /*
     State Implementation
@@ -76,22 +77,26 @@ export type ModulesImplementation<SD extends AnyStoreDefinition | AnyStoreModule
   [key in keyof Modules<SD>]: StoreModuleImplementation<Modules<SD>[key]>
 }
 
-export interface StoreModuleImplementation<SD extends AnyStoreModuleDefinition> {
+export type StoreModuleImplementation<SD extends AnyStoreModuleDefinition> = {
   state: StateImplementation<SD>;
   getters: GettersImplementation<SD>;
   mutations: MutationsImplementation<SD>;
   actions: ActionsImplementation<SD>;
   modules: ModulesImplementation<SD>;
-}
+
+  namespaced?: false; // currently disabled
+};
 
 /*
     Store Implementation
  */
 
-export interface StoreImplementation<SD extends AnyStoreDefinition> {
+export type StoreImplementation<SD extends AnyStoreDefinition> = {
   state: StateImplementation<SD>;
   getters: GettersImplementation<SD>;
   mutations: MutationsImplementation<SD>;
   actions: ActionsImplementation<SD>;
   modules: ModulesImplementation<SD>;
-}
+
+  plugins?: ((store: StoreImplementation<SD>) => void)[];
+} & Omit<StoreOptions<StoreState<SD>>, "state" | "getters" | "mutations" | "actions" | "modules" | "plugins">;
