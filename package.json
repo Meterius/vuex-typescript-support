@@ -1,6 +1,6 @@
 {
   "name": "vuex-typescript-support",
-  "version": "0.0.6",
+  "version": "0.1.0",
   "description": "Add Typescript types to improve type safety in Vue projects using Vuex",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
