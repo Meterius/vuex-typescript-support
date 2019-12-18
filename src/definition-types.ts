@@ -7,7 +7,7 @@ export type AnyAction = (() => Promise<void> | void) | ((payload: any) => Promis
 export type AnyState = { [key: string]: any };
 export type AnyGetters = { [key: string]: any };
 export type AnyMutations = { [key: string]: AnyMutation };
-export type AnyActions = { [key: string]: AnyMutation };
+export type AnyActions = { [key: string]: AnyAction };
 
 export type AnyModulesDefinition= { [key: string]: AnyStoreModuleDefinition };
 
