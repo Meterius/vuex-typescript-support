@@ -11,13 +11,13 @@ type NestedModuleGetters = {
   bazPlusBar: string;
 };
 
-type NestedModuleMutations = {
-  SET_BAZ: (newBaz: string) => void;
+type NestedModuleMutationPayloads = {
+  SET_BAZ: string;
 };
 
-type NestedModuleActions = {
-  setBazToBar: () => Promise<void>;
-  setBazAndBar: (payload: { baz: string, bar: string }) => Promise<void>;
+type NestedModuleActionPayloads = {
+  setBazToBar: undefined;
+  setBazAndBar: { baz: string, bar: string };
 };
 
 // Note: StoreModuleDefinition is very similar to StoreDefinition the only difference
@@ -27,7 +27,7 @@ export type NestedModuleDefinition = StoreModuleDefinition<{
   Store: RootStoreDefinition,
   State: NestedModuleState;
   Getters: NestedModuleGetters;
-  Mutations: NestedModuleMutations;
-  Actions: NestedModuleActions;
+  MutationPayloads: NestedModuleMutationPayloads;
+  ActionPayloads: NestedModuleActionPayloads;
   Modules: {};
 }>;

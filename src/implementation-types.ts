@@ -2,19 +2,15 @@ import {
   Overwrite,
 } from "./utility-types";
 import {
-  Actions,
   AnyStoreDefinition,
   AnyStoreModuleDefinition,
   Getters,
   Modules,
-  Mutations,
   State,
   StoreGetters,
   StoreState,
   Commit,
-  Dispatch,
-  HasPayload,
-  Payload,
+  Dispatch, MutationPayloads, ActionPayloads,
 } from "./definition-types";
 import { Store, StoreOptions } from "vuex";
 import { TypedStore } from "./typed-store";
@@ -46,9 +42,9 @@ export type GettersImplementation<
 export type MutationsImplementation<
   SD extends AnyStoreDefinition | AnyStoreModuleDefinition
 > = {
-  [key in keyof Mutations<SD>]: HasPayload<Mutations<SD>[key]> extends true ?
-    (state: State<SD>, payload: Payload<Mutations<SD>[key]>) => void :
-    (state: State<SD>) => void
+  [key in keyof MutationPayloads<SD>]: undefined extends MutationPayloads<SD>[key] ?
+    (state: State<SD>, payload?: MutationPayloads<SD>[key]) => void :
+    (state: State<SD>, payload: MutationPayloads<SD>[key]) => void
 }
 
 /*
@@ -69,9 +65,9 @@ export type ActionContext<
 export type ActionsImplementation<
   SD extends AnyStoreDefinition | AnyStoreModuleDefinition
   > = {
-  [key in keyof Actions<SD>]: HasPayload<Actions<SD>[key]> extends true ?
-    (context: ActionContext<SD>, payload: Payload<Actions<SD>[key]>) => ReturnType<Actions<SD>[key]> :
-    (context: ActionContext<SD>) => ReturnType<Actions<SD>[key]>
+  [key in keyof ActionPayloads<SD>]: undefined extends ActionPayloads<SD>[key]?
+    (context: ActionContext<SD>, payload?: ActionPayloads<SD>[key]) => Promise<void> | void :
+    (context: ActionContext<SD>, payload: ActionPayloads<SD>[key]) => Promise<void> | void
 }
 
 /*

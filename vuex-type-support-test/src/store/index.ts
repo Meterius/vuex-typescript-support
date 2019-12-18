@@ -17,8 +17,8 @@ export type RootStoreDefinition = StoreDefinition<{
     a: number
   };
   Getters: {};
-  Mutations: {};
-  Actions: {};
+  MutationPayloads: {};
+  ActionPayloads: {};
   Modules: {
     alpha: AlphaStoreDefinition,
     beta: BetaStoreDefinition,

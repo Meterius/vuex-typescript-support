@@ -56,9 +56,6 @@ export type TypedStore<SD extends AnyStoreDefinition> =
       options?: WatchOptions
     ): () => void;
 
-    registerModule: never;
-    unregisterModule: never;
-
     hotUpdate(options: Partial<Pick<
       StoreImplementation<SD>, "actions" | "modules" | "mutations" | "getters"
     >>): void;
