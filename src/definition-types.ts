@@ -1,12 +1,15 @@
 import { UnionToIntersection } from "./utility-types";
 import { CommitOptions, DispatchOptions } from "vuex";
 
+export type AnyMutation = (() => void) | ((payload: any) => void);
+export type AnyAction = (() => Promise<void>) | ((payload: any) => Promise<void>);
+
 export type AnyState = { [key: string]: any };
 export type AnyGetters = { [key: string]: any };
-export type AnyMutationPayloads = { [key: string]: any };
-export type AnyActionsPayload = { [key: string]: any };
+export type AnyMutations = { [key: string]: AnyMutation };
+export type AnyActions = { [key: string]: AnyAction };
 
-export type AnyModulesDefinition = { [key: string]: AnyStoreModuleDefinition };
+export type AnyModulesDefinition= { [key: string]: AnyStoreModuleDefinition };
 
 export type AnyStoreDefinition = StoreDefinition<AnyStoreDefinitionParameters>;
 
@@ -15,24 +18,24 @@ export type AnyStoreModuleDefinition = StoreModuleDefinition<
 >;
 
 type AnyStoreModuleDefinitionParameters = StoreModuleDefinitionParameters<
-  AnyStoreDefinition, AnyState, AnyGetters, AnyMutationPayloads, AnyActionsPayload, AnyModulesDefinition
+  AnyStoreDefinition, AnyState, AnyGetters, AnyMutations, AnyActions, AnyModulesDefinition
 >;
 
 type AnyStoreDefinitionParameters = StoreDefinitionParameters<
-  AnyState, AnyGetters, AnyMutationPayloads, AnyActionsPayload, AnyModulesDefinition
+  AnyState, AnyGetters, AnyMutations, AnyActions, AnyModulesDefinition
 >;
 
 export interface StoreDefinitionParameters<
   S extends AnyState,
   G extends AnyGetters,
-  M extends AnyMutationPayloads,
-  A extends AnyActionsPayload,
+  M extends AnyMutations,
+  A extends AnyActions,
   MS extends AnyModulesDefinition,
 > {
   State: S;
   Getters: G;
-  MutationPayloads: M;
-  ActionPayloads: A;
+  Mutations: M;
+  Actions: A;
   Modules: MS;
 }
 
@@ -44,8 +47,8 @@ export type StoreDefinition<
 
   State: P["State"];
   Getters: P["Getters"];
-  MutationPayloads: P["MutationPayloads"];
-  ActionPayloads: P["ActionPayloads"];
+  Mutations: TransformMutationsInput<P["Mutations"]>;
+  Actions: TransformActionsInput<P["Actions"]>;
   Modules: P["Modules"];
 }
 
@@ -53,15 +56,15 @@ export interface StoreModuleDefinitionParameters<
   R extends AnyStoreDefinition,
   S extends AnyState,
   G extends AnyGetters,
-  M extends AnyMutationPayloads,
-  A extends AnyActionsPayload,
+  M extends AnyMutations,
+  A extends AnyActions,
   MS extends AnyModulesDefinition,
   > {
   Store: R;
   State: S;
   Getters: G;
-  MutationPayloads: M;
-  ActionPayloads: A;
+  Mutations: M;
+  Actions: A;
   Modules: MS;
 }
 
@@ -74,36 +77,39 @@ export type StoreModuleDefinition<
   Store: P["Store"];
   State: P["State"];
   Getters: P["Getters"];
-  MutationPayloads: P["MutationPayloads"];
-  ActionPayloads: P["ActionPayloads"];
+  Mutations: TransformMutationsInput<P["Mutations"]>;
+  Actions: TransformActionsInput<P["Actions"]>;
   Modules: P["Modules"];
 }
+
+type TransformActionsInput<A extends AnyActions> = {
+  [key in keyof A]: TransformActionInput<A[key]>
+}
+
+type TransformMutationsInput<M extends AnyMutations> = {
+  [key in keyof M]: TransformMutationInput<M[key]>
+}
+
+type TransformMutationInput<F extends (...args: any) => any> =
+  HasPayload<F> extends true ?
+    (HasOptionalPayload<F> extends true ? ((payload?: Payload<F>) => void) : ((payload: Payload<F>) => void)) :
+    (() => void);
+
+type TransformActionInput<F extends (...args: any) => any> =
+  HasPayload<F> extends true ?
+    (HasOptionalPayload<F> extends true ? ((payload?: Payload<F>) => Promise<void>) : ((payload: Payload<F>) => Promise<void>)) :
+    (() => Promise<void>);
 
 /*
     On Store Types
  */
 
-type ParseAction<P> = undefined extends P ?
-  ((payload?: P) => Promise<void>) : ((payload: P) => Promise<void>);
-
-type ParseMutation<P> = undefined extends P ?
-  ((payload?: P) => void) : ((payload: P) => void);
-
 export type RootStore<SD extends AnyStoreDefinition | AnyStoreModuleDefinition> =
   SD extends AnyStoreModuleDefinition ? SD["Store"] : SD;
 export type State<SD extends AnyStoreDefinition | AnyStoreModuleDefinition> = SD["State"];
 export type Getters<SD extends AnyStoreDefinition | AnyStoreModuleDefinition> = SD["Getters"];
-export type ActionPayloads<SD extends AnyStoreDefinition | AnyStoreModuleDefinition> = SD['ActionPayloads'];
-export type MutationPayloads<SD extends AnyStoreDefinition | AnyStoreModuleDefinition> = SD['MutationPayloads'];
-
-export type Mutations<SD extends AnyStoreDefinition | AnyStoreModuleDefinition> = {
-  [key in keyof MutationPayloads<SD>]: ParseMutation<MutationPayloads<SD>[key]>;
-};
-
-export type Actions<SD extends AnyStoreDefinition | AnyStoreModuleDefinition> = {
-  [key in keyof ActionPayloads<SD>]: ParseAction<ActionPayloads<SD>[key]>;
-};
-
+export type Mutations<SD extends AnyStoreDefinition | AnyStoreModuleDefinition> = SD["Mutations"];
+export type Actions<SD extends AnyStoreDefinition | AnyStoreModuleDefinition> = SD["Actions"];
 export type Modules<SD extends AnyStoreDefinition | AnyStoreModuleDefinition> = SD["Modules"];
 
 /*
@@ -122,26 +128,14 @@ type _StoreGetters<SD extends AnyStoreDefinition | AnyStoreModuleDefinition> = U
 
 export type StoreGetters<SD extends AnyStoreDefinition | AnyStoreModuleDefinition> = _StoreGetters<RootStore<SD>>;
 
-type _StoreMutationPayloads<SD extends AnyStoreDefinition | AnyStoreModuleDefinition> = UnionToIntersection<{
-  readonly [key in keyof Modules<SD>]: _StoreMutationPayloads<Modules<SD>[key]>
-}[keyof Modules<SD>]> & MutationPayloads<SD>;
-
-export type StoreMutationPayloads<SD extends AnyStoreDefinition | AnyStoreModuleDefinition> = _StoreMutationPayloads<RootStore<SD>>;
-
-type _StoreActionPayloads<SD extends AnyStoreDefinition | AnyStoreModuleDefinition> = UnionToIntersection<{
-  readonly [key in keyof Modules<SD>]: _StoreActionPayloads<Modules<SD>[key]>
-}[keyof Modules<SD>]> & ActionPayloads<SD>;
-
-export type StoreActionPayloads<SD extends AnyStoreDefinition | AnyStoreModuleDefinition> = _StoreActionPayloads<RootStore<SD>>;
-
 export type _StoreMutations<SD extends AnyStoreDefinition | AnyStoreModuleDefinition> = UnionToIntersection<{
- readonly [key in keyof Modules<SD>]: _StoreMutations<Modules<SD>[key]>
+  readonly [key in keyof Modules<SD>]: _StoreMutations<Modules<SD>[key]>
 }[keyof Modules<SD>]> & Mutations<SD>;
 
 export type StoreMutations<SD extends AnyStoreDefinition | AnyStoreModuleDefinition> = _StoreMutations<RootStore<SD>>;
 
 export type _StoreActions<SD extends AnyStoreDefinition | AnyStoreModuleDefinition> = UnionToIntersection<{
- readonly [key in keyof Modules<SD>]: _StoreActions<Modules<SD>[key]>
+  readonly [key in keyof Modules<SD>]: _StoreActions<Modules<SD>[key]>
 }[keyof Modules<SD>]> & Actions<SD>;
 
 export type StoreActions<SD extends AnyStoreDefinition | AnyStoreModuleDefinition> = _StoreActions<RootStore<SD>>;
@@ -150,31 +144,36 @@ export type StoreActions<SD extends AnyStoreDefinition | AnyStoreModuleDefinitio
     Commit and Dispatch Definitions
  */
 
-export type OptionalKeys<FM extends Record<string, (...args: any) => any>> = {
-  [key in keyof FM]: undefined extends FM[key] ?
+export type KeysWithOptionalPayload<FM extends Record<string, (...args: any) => any>> = {
+  [key in keyof FM]: HasOptionalPayload<FM[key]> extends true ?
     key : never
 }[keyof FM];
 
-export type RequiredKeys<FM extends Record<string, (...args: any) => any>> = {
-  [key in keyof FM]: undefined extends FM[key] ?
-    never : key
+export type KeysWithRequiredPayload<FM extends Record<string, (...args: any) => any>> = {
+  [key in keyof FM]: HasOptionalPayload<FM[key]> extends false ?
+    key : never
 }[keyof FM];
 
+export type HasOptionalPayload<F> = F extends () => any ? true : false;
+
+export type Payload<F> = HasPayload<F> extends true ? (F extends (payload: infer P) => any ? P : undefined) : undefined;
+
+export type HasPayload<F> = ((any extends (F extends (payload: infer P) => any ? P : any) ? never : any) extends never ? 1 : 0) extends 1 ? false : true;
+
 export type SomeMutationPayloadWithType<SD extends AnyStoreDefinition> = {
-  [key in keyof StoreMutationPayloads<SD>]: PayloadWithType<key, StoreMutationPayloads<SD>[key]>
-}[keyof StoreMutationPayloads<SD>];
+  [key in keyof StoreMutations<SD>]: PayloadWithType<key, StoreMutations<SD>[key]>
+}[keyof StoreMutations<SD>];
 
 export type SomeActionPayloadWithType<SD extends AnyStoreDefinition> = {
-  [key in keyof StoreActionPayloads<SD>]: PayloadWithType<key, StoreActionPayloads<SD>[key]>
-}[keyof StoreActionPayloads<SD>];
+  [key in keyof StoreActions<SD>]: PayloadWithType<key, StoreActions<SD>[key]>
+}[keyof StoreActions<SD>];
 
-export type PayloadWithType<T, P> = {
-   type: T;
-} & (undefined extends P ? {
-   payload?: P;
-} : {
-   payload: P;
-});
+export type PayloadWithType<T, F> = {
+  type: T;
+  payload:
+    HasPayload<F> extends true ? (HasOptionalPayload<F> extends true ? Payload<F> | undefined : Payload<F>)
+      : undefined;
+};
 
 type BaseCommitOptions = Omit<CommitOptions, "root">;
 type BaseDispatchOptions = Omit<DispatchOptions, "root">;
@@ -182,14 +181,14 @@ type BaseDispatchOptions = Omit<DispatchOptions, "root">;
 export type StoreCommit<
   SD extends AnyStoreDefinition | AnyStoreModuleDefinition
   > = {
-  <StoreMutationName extends RequiredKeys<StoreMutationPayloads<SD>>>(
+  <StoreMutationName extends KeysWithRequiredPayload<StoreMutations<SD>>>(
     type: StoreMutationName,
-    payload: StoreMutationPayloads<SD>[StoreMutationName],
+    payload: Payload<StoreMutations<SD>[StoreMutationName]>,
     options?: BaseCommitOptions & { root?: boolean }
   ): void;
-  <StoreMutationName extends OptionalKeys<StoreMutationPayloads<SD>>>(
+  <StoreMutationName extends KeysWithOptionalPayload<StoreMutations<SD>>>(
     type: StoreMutationName,
-    payload?: StoreMutationPayloads<SD>[StoreMutationName],
+    payload?: Payload<StoreMutations<SD>[StoreMutationName]>,
     options?: BaseCommitOptions & { root?: boolean }
   ): void;
 };
@@ -197,35 +196,35 @@ export type StoreCommit<
 export type StoreDispatch<
   SD extends AnyStoreDefinition | AnyStoreModuleDefinition
   > = {
-  <StoreActionName extends RequiredKeys<StoreActionPayloads<SD>>>(
+  <StoreActionName extends KeysWithRequiredPayload<StoreActions<SD>>>(
     type: StoreActionName,
-    payload: StoreActionPayloads<SD>[StoreActionName],
+    payload: Payload<StoreActions<SD>[StoreActionName]>,
     options?: BaseDispatchOptions & { root?: boolean }
-  ): void;
-  <StoreActionName extends OptionalKeys<StoreActionPayloads<SD>>>(
+  ): Promise<void>;
+  <StoreActionName extends KeysWithOptionalPayload<StoreActions<SD>>>(
     type: StoreActionName,
-    payload?: StoreActionPayloads<SD>[StoreActionName],
+    payload?: Payload<StoreActions<SD>[StoreActionName]>,
     options?: BaseDispatchOptions & { root?: boolean }
-  ): void;
+  ): Promise<void>;
 };
 
 export type Commit<
   SD extends AnyStoreDefinition | AnyStoreModuleDefinition
   > = {
-  <MutationName extends RequiredKeys<MutationPayloads<SD>>>(
+  <MutationName extends KeysWithRequiredPayload<Mutations<SD>>>(
     type: MutationName,
-    payload: MutationPayloads<SD>[MutationName],
+    payload: Payload<Mutations<SD>[MutationName]>,
     options?: BaseCommitOptions & { root?: false }
   ): void;
-  <MutationName extends OptionalKeys<MutationPayloads<SD>>>(
+  <MutationName extends KeysWithOptionalPayload<Mutations<SD>>>(
     type: MutationName,
-    payload?: MutationPayloads<SD>[MutationName],
+    payload?: Payload<Mutations<SD>[MutationName]>,
     options?: BaseCommitOptions & { root?: false }
   ): void;
 
-  <StoreMutationName extends keyof StoreMutationPayloads<SD>>(
+  <StoreMutationName extends keyof StoreMutations<SD>>(
     type: StoreMutationName,
-    payload: StoreMutationPayloads<SD>[StoreMutationName],
+    payload: Payload<StoreMutations<SD>[StoreMutationName]>,
     options: BaseCommitOptions & { root: true }
   ): void;
 };
@@ -233,20 +232,20 @@ export type Commit<
 export type Dispatch<
   SD extends AnyStoreDefinition | AnyStoreModuleDefinition
   > = {
-  <ActionName extends RequiredKeys<ActionPayloads<SD>>>(
+  <ActionName extends KeysWithRequiredPayload<Actions<SD>>>(
     type: ActionName,
-    payload: ActionPayloads<SD>[ActionName],
+    payload: Payload<Actions<SD>[ActionName]>,
     options?: BaseDispatchOptions & { root?: false }
-  ): void;
-  <ActionName extends OptionalKeys<ActionPayloads<SD>>>(
+  ): Promise<void>;
+  <ActionName extends KeysWithOptionalPayload<Actions<SD>>>(
     type: ActionName,
-    payload?: ActionPayloads<SD>[ActionName],
+    payload?: Payload<Actions<SD>[ActionName]>,
     options?: BaseDispatchOptions & { root?: false }
-  ): void;
+  ): Promise<void>;
 
-  <StoreActionName extends keyof StoreActionPayloads<SD>>(
+  <StoreActionName extends keyof StoreActions<SD>>(
     type: StoreActionName,
-    payload: StoreActionPayloads<SD>[StoreActionName],
+    payload: Payload<StoreActions<SD>[StoreActionName]>,
     options: BaseDispatchOptions & { root: true }
-  ): void;
+  ): Promise<void>;
 };

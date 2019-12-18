@@ -1,5 +1,5 @@
 
-import { StoreDefinition } from "vuex-typescript-support";
+import {StoreDefinition} from "vuex-typescript-support";
 import {NestedModuleDefinition} from "./nested-store-module/type-definition";
 
 type RootStoreState = {
@@ -13,22 +13,27 @@ type RootStoreGetters = {
   getBarWithSuffix: (suffix: string) => string;
 };
 
-// Note: If undefined extends a certain payload type
-// the commit and dispatch functions will make the payload parameter optional.
-type RootStoreMutationPayloads = {
-  RESET_FOO: undefined;
-  INCREMENT_FOO: undefined;
-  SET_BAR: string | undefined;
-  APPEND_BAR: string;
+// Note: that since () => unknown can be assigned to () => void
+// mutations and actions could theoretically return anything, but since
+// they are called via commit and dispatch, void and Promise<void> will always be
+// returned respectively
+
+type RootStoreMutations = {
+  RESET_FOO: () => void;
+  INCREMENT_FOO: () => void;
+  SET_BAR: (newBar: string) => void;
 };
 
-// Note: All actions will be typed as returning Promise<void>
-// since dispatch can only be called asynchronously and this makes
-// it easier to use Actions and StoreActions to type safely
-type RootStoreActionPayloads = {
-  resetFooToOne: undefined;
-  setBar: string;
-  setBarAfterOneSec: string;
+// Note: While an action that is typed as returning Promise<void>
+// forces the implementation to also return a Promise
+// an action typed as return void can still be implemented with
+// a function returning a promise (since () => Promise<void> can be assigned to () => void).
+// This is not very relevant since actions can only be called via
+// dispatch which will always return a promise.
+type RootStoreActions = {
+  resetFooToOne: () => Promise<void>;
+  setBar: (newBar?: string) => Promise<void>;
+  setBarAfterOneSec: (newBar: string) => Promise<void>;
 };
 
 // Note: Theoretically every one of these types could be inlined in the StoreDefinition
@@ -39,8 +44,8 @@ type RootStoreActionPayloads = {
 export type RootStoreDefinition = StoreDefinition<{
   State: RootStoreState;
   Getters: RootStoreGetters;
-  MutationPayloads: RootStoreMutationPayloads;
-  ActionPayloads: RootStoreActionPayloads;
+  Mutations: RootStoreMutations;
+  Actions: RootStoreActions;
   Modules: {
     nestedModule: NestedModuleDefinition;
   };

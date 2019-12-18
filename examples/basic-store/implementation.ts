@@ -31,7 +31,6 @@ const rootStoreMutations: MutationsImplementation<RootStoreDefinition> = {
   INCREMENT_FOO: (state: State<RootStoreDefinition>) => { state.foo += 1; },
   RESET_FOO: (state: State<RootStoreDefinition>) => { state.foo = 0; },
   SET_BAR: (state: State<RootStoreDefinition>, newBar?: string) => { state.bar = newBar || ""; },
-  APPEND_BAR: (state: State<RootStoreDefinition>, suffix: string) => { state.bar += suffix; },
 };
 
 const rootStoreActions: ActionsImplementation<RootStoreDefinition> = {
@@ -55,12 +54,12 @@ const rootStoreActions: ActionsImplementation<RootStoreDefinition> = {
     // is not allowed since it makes the Typescript errors of mismatched payload types or miss spellings
     // much much more cryptic
   },
-  setBar: async ({ commit }: ActionContext<RootStoreDefinition>, newBar: string) => {
+  setBar: async ({ commit }: ActionContext<RootStoreDefinition>, newBar?: string) => {
     // Note: In commit as well as dispatch only names that are actually defined are possible
     // as values and their payloads are properly typed as well, i.e. in this
     // example commit('SET_BAR', payload) requires payload to be of
     // type string and will give a static typescript error if it is not.
-    commit('SET_BAR', newBar);
+    commit('SET_BAR', newBar || "");
   },
   setBarAfterOneSec: async ({ dispatch }: ActionContext<RootStoreDefinition>, newBar: string): Promise<void> => {
     // wait one second (not implemented in this example)
