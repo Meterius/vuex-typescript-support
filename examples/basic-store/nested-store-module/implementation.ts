@@ -25,7 +25,7 @@ const nestedModuleMutations: MutationsImplementation<NestedModuleDefinition> = {
 };
 
 const nestedModuleActions: ActionsImplementation<NestedModuleDefinition> = {
-  setBazToBar: ({ commit, rootGetters }) => {
+  setBazToBar: async ({ commit, rootGetters }) => {
     // Note: getBarWithSuffix is a getter from another store / store module and is therefore only accessible
     // via a root getter, which is contained in the ActionContext (this also holds for rootState,
     // which is accessible in actions via the ActionContext and in mutations as a separate parameter)

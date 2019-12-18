@@ -16,7 +16,7 @@ type NestedModuleMutations = {
 };
 
 type NestedModuleActions = {
-  setBazToBar: () => void;
+  setBazToBar: () => Promise<void>;
   setBazAndBar: (payload: { baz: string, bar: string }) => Promise<void>;
 };
 

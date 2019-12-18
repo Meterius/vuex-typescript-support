@@ -23,8 +23,8 @@ export const mutationsImplementation: MutationsImplementation<AlphaStoreDefiniti
 };
 
 export const actionsImplementation: ActionsImplementation<AlphaStoreDefinition> = {
-  toggleVarA: ({ commit }) => { commit('toggleVarA'); },
-  add: ({ commit }, x) => { commit('addVarB', x); },
+  toggleVarA: async ({ commit }) => { commit('toggleVarA'); },
+  add: async ({ commit }, x) => { commit('addVarB', x); },
 };
 
 export const alphaStore: StoreModuleImplementation<AlphaStoreDefinition> = {

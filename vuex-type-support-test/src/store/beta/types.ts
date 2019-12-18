@@ -17,7 +17,7 @@ export type BetaMutations = {
 }
 
 export type BetaActions = {
-  setT: (x: number) => void;
+  setT: (x: number) => Promise<void>;
 }
 
 export type BetaStoreDefinition = StoreModuleDefinition<{

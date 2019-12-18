@@ -24,15 +24,12 @@ type RootStoreMutations = {
   SET_BAR: (newBar: string) => void;
 };
 
-// Note: While an action that is typed as returning Promise<void>
-// forces the implementation to also return a Promise
-// an action typed as return void can still be implemented with
-// a function returning a promise (since () => Promise<void> can be assigned to () => void).
-// This is not very relevant since actions can only be called via
-// dispatch which will always return a promise.
+// Note: All actions will be typed as returning Promise<void>
+// since dispatch can only be called asynchronously and this makes
+// it easier to use Actions and StoreActions to type safely
 type RootStoreActions = {
-  resetFooToOne: () => void;
-  setBar: (newBar: string) => void;
+  resetFooToOne: () => Promise<void>;
+  setBar: (newBar: string) => Promise<void>;
   setBarAfterOneSec: (newBar: string) => Promise<void>;
 };
 

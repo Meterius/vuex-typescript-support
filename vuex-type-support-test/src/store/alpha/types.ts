@@ -19,8 +19,8 @@ export type AlphaMutations = {
 }
 
 export type AlphaActions = {
-  toggleVarA: () => void;
-  add: (x: number) => void;
+  toggleVarA: () => Promise<void>;
+  add: (x: number) => Promise<void>;
 }
 
 export type AlphaStoreDefinition = StoreModuleDefinition<{

@@ -34,7 +34,7 @@ const rootStoreMutations: MutationsImplementation<RootStoreDefinition> = {
 };
 
 const rootStoreActions: ActionsImplementation<RootStoreDefinition> = {
-  resetFooToOne: ({ commit }: ActionContext<RootStoreDefinition>) => {
+  resetFooToOne: async ({ commit }: ActionContext<RootStoreDefinition>) => {
     // Note: Mutations without payload can be called on commit without the payload specified,
     // or the payload set to undefined (in case commit options are required to be specified)
     // and the payloadWithType call signature is also still available on dispatch and commit
@@ -54,7 +54,7 @@ const rootStoreActions: ActionsImplementation<RootStoreDefinition> = {
     // is not allowed since it makes the Typescript errors of mismatched payload types or miss spellings
     // much much more cryptic
   },
-  setBar: ({ commit }: ActionContext<RootStoreDefinition>, newBar: string) => {
+  setBar: async ({ commit }: ActionContext<RootStoreDefinition>, newBar: string) => {
     // Note: In commit as well as dispatch only names that are actually defined are possible
     // as values and their payloads are properly typed as well, i.e. in this
     // example commit('SET_BAR', payload) requires payload to be of

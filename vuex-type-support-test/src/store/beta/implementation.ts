@@ -21,7 +21,7 @@ export const mutationsImplementation: MutationsImplementation<BetaStoreDefinitio
 };
 
 export const actionsImplementation: ActionsImplementation<BetaStoreDefinition> = {
-  setT: ({ commit }, x: number) => { commit('changeT', x); },
+  setT: async ({ commit }, x: number) => { commit('changeT', x); },
 };
 
 export const betaStore: StoreModuleImplementation<BetaStoreDefinition> = {

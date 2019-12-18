@@ -2,7 +2,7 @@ import { UnionToIntersection } from "./utility-types";
 import { CommitOptions, DispatchOptions } from "vuex";
 
 export type AnyMutation = (() => void) | ((payload: any) => void);
-export type AnyAction = (() => Promise<void> | void) | ((payload: any) => Promise<void> | void);
+export type AnyAction = (() => Promise<void>) | ((payload: any) => Promise<void>);
 
 export type AnyState = { [key: string]: any };
 export type AnyGetters = { [key: string]: any };
