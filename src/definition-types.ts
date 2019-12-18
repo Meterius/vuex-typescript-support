@@ -69,7 +69,7 @@ export interface StoreModuleDefinitionParameters<
 }
 
 export type StoreModuleDefinition<
-  P extends StoreModuleDefinitionParameters<any, any, any, any, any, any>
+  P extends AnyStoreModuleDefinitionParameters
   > = {
   __StoreDefinition: false;
   __StoreModuleDefinition: true;
