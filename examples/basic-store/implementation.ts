@@ -30,7 +30,8 @@ const rootStoreGetters: GettersImplementation<RootStoreDefinition> = {
 const rootStoreMutations: MutationsImplementation<RootStoreDefinition> = {
   INCREMENT_FOO: (state: State<RootStoreDefinition>) => { state.foo += 1; },
   RESET_FOO: (state: State<RootStoreDefinition>) => { state.foo = 0; },
-  SET_BAR: (state: State<RootStoreDefinition>, newBar: string) => { state.bar = newBar; },
+  SET_BAR: (state: State<RootStoreDefinition>, newBar?: string) => { state.bar = newBar || ""; },
+  APPEND_BAR: (state: State<RootStoreDefinition>, suffix: string) => { state.bar += suffix; },
 };
 
 const rootStoreActions: ActionsImplementation<RootStoreDefinition> = {
@@ -83,9 +84,9 @@ const rootStoreImplementation: StoreImplementation<RootStoreDefinition> = {
       if(mutation.type === 'SET_BAR'){
         // Note: Mutation is a payloadWithType and completely typed, therefore Typescript can infer
         // the type of mutation.payload if mutation.type has been tested
-        const newBar: string = mutation.payload;
+        const newBar: string | undefined = mutation.payload;
 
-        console.log(`New Bar: ${newBar}`);
+        console.log(`New Bar: ${newBar || ""}`);
       }
     });
   }]

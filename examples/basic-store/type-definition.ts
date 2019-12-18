@@ -14,12 +14,12 @@ type RootStoreGetters = {
 };
 
 // Note: If undefined extends a certain payload type
-// the commit and dispatch called will make the payload parameter optional if possible,
-// this makes it more readable when mutations and actions without payloads are used
+// the commit and dispatch functions will make the payload parameter optional.
 type RootStoreMutationPayloads = {
   RESET_FOO: undefined;
   INCREMENT_FOO: undefined;
-  SET_BAR: string;
+  SET_BAR: string | undefined;
+  APPEND_BAR: string;
 };
 
 // Note: All actions will be typed as returning Promise<void>
