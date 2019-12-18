@@ -1,0 +1,18 @@
+diff --git a/node_modules/vuex/types/vue.d.ts b/node_modules/vuex/types/vue.d.ts
+index 302fc4e..f569bc6 100644
+--- a/node_modules/vuex/types/vue.d.ts
++++ b/node_modules/vuex/types/vue.d.ts
+@@ -7,12 +7,6 @@ import { Store } from "./index";
+ 
+ declare module "vue/types/options" {
+   interface ComponentOptions<V extends Vue> {
+-    store?: Store<any>;
+-  }
+-}
+-
+-declare module "vue/types/vue" {
+-  interface Vue {
+-    $store: Store<any>;
++    store?: any;
+   }
+ }

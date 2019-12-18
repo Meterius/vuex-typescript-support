@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "patch-package"
   },
   "author": "",
   "license": "ISC",
@@ -12,5 +13,8 @@
     "vuex-typescript-support": "file:../",
     "vue": "^2.6.11",
     "vuex": "^3.1.2"
+  },
+  "dependencies": {
+    "patch-package": "^6.2.0"
   }
 }
