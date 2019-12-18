@@ -1,0 +1,10 @@
+Install vuex
+Install patch-package
+Go into node_modules/vuex/types/vue.d.ts
+    - Remove the complete "declare module "vue/types/vue"" part
+    - Change Store<any> to any in the ComponentOptions
+    - Save
+Run "npx patch-package vuex", this will store the patch in patches (and should be committed)
+Add "patch-package" to the "postinstall" script in the package
+Add a file similar to "vue-declaration-for-on-component-usage/vue.d.ts" and use your own Store type to your project
+Finished (now every install will automatically fix the declaration and on component usage is possible)

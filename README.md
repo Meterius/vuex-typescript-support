@@ -80,3 +80,10 @@ please create an issue on the github page.
 If different Stores are used as Root Stores in the Store Modules this will not cause a Typescript error in
 the creation of the definition, please note that it is important for all Store Modules inside the same Store to
 only use the Store that they are contained in.
+
+##### On Component Declaration
+Since it is not current possible in Typescript to overwrite a previously declared interface property, the
+$store property on the components will still be typed as Store\<any> since the node_modules/vuex/types/vue.d.ts
+declares it. This means that either the store object is used directly instead of the this.$store property or
+the local node_module/vuex packages is patched via for example [patch-package]("https://www.npmjs.com/package/patch-package").
+(See examples/basic-store for an example of it can be done using patch-package)
