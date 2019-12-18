@@ -8,7 +8,8 @@ export type KeysWithoutPayload<FM extends Record<string, (...args: any) => any>>
 
 export type HasPayload<F extends (...args: any) => any> = F extends () => any ? false : true;
 
-export type Payload<F extends (arg: any) => any> = F extends (payload: infer P) => any ? P : undefined;
+export type Payload<F extends (arg: any) => any> =
+  HasPayload<F> extends true ? (F extends (payload: infer P) => any ? P : undefined) : undefined;
 
 export type Overwrite<Base extends {}, OverwriteExtension extends {}> =
   Omit<Base, keyof OverwriteExtension> & OverwriteExtension;
