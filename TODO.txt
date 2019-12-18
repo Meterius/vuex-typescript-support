@@ -1,0 +1,5 @@
+- Implement the addition of the type of action handlers that are within a module but are accessible without prefixes
+  (which currently just means supporting a certain style of action implementation since prefixes are not inserted anyway)
+- Implement namespaces with correct prefix generation (requires Typescript to implement Key Augmentation)
+- Enforce in Store Modules Definition that the contained modules have to have the same Store specified
+- Enforce in Store Definition that the common Store used by the modules has the same type as itself
