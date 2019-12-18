@@ -20,9 +20,9 @@ type NestedModuleActions = {
   setBazAndBar: (payload: { baz: string, bar: string }) => Promise<void>;
 };
 
-// Note: StoreModuleDefinition is very similar to StoreDefinition the only difference
-// is that it requires the parameter Store to be set to the store that contains all modules,
-// this will be typed check in order to verify whether all modules have the same Store defined as their root store.
+// Note: StoreModuleDefinition is very similar to StoreDefinition,
+// the only difference is that it requires the parameter Store to be set
+// to the (Root)Store in which it is contained
 export type NestedModuleDefinition = StoreModuleDefinition<{
   Store: RootStoreDefinition,
   State: NestedModuleState;

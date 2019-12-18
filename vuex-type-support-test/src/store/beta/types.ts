@@ -12,19 +12,19 @@ export interface BetaGetters {
   t: string;
 }
 
-export type BetaMutationPayloads = {
-  changeT: number;
+export type BetaMutations = {
+  changeT: (x: number) => void;
 }
 
-export type BetaActionPayloads = {
-  setT: number;
+export type BetaActions = {
+  setT: (x: number) => Promise<void>;
 }
 
 export type BetaStoreDefinition = StoreModuleDefinition<{
   Store: RootStoreDefinition;
   State: BetaState;
   Getters: BetaGetters;
-  MutationPayloads: BetaMutationPayloads;
-  ActionPayloads: BetaActionPayloads;
+  Mutations: BetaMutations;
+  Actions: BetaActions;
   Modules: {};
 }>;

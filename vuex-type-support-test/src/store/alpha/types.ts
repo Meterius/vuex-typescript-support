@@ -13,21 +13,21 @@ export type AlphaGetters = {
   varBPlusTwo: number;
 }
 
-export type AlphaMutationPayloads = {
-  toggleVarA: undefined;
-  addVarB: number;
+export type AlphaMutations = {
+  toggleVarA: () => void;
+  addVarB: (x: number) => void;
 }
 
-export type AlphaActionPayloads = {
-  toggleVarA: undefined;
-  add: number;
+export type AlphaActions = {
+  toggleVarA: () => Promise<void>;
+  add: (x: number) => Promise<void>;
 }
 
 export type AlphaStoreDefinition = StoreModuleDefinition<{
   Store: RootStoreDefinition;
   State: AlphaState;
   Getters: AlphaGetters;
-  MutationPayloads: AlphaMutationPayloads;
-  ActionPayloads: AlphaActionPayloads;
+  Mutations: AlphaMutations;
+  Actions: AlphaActions;
   Modules: {};
 }>;

@@ -6,7 +6,7 @@ import {
   ActionsImplementation,
   ActionContext,
   StoreImplementation,
-  TypedStore, createTypedStore,
+  createTypedStore,
 } from "vuex-typescript-support";
 import Vuex from "vuex";
 import { RootStoreDefinition } from "./type-definition";
@@ -35,24 +35,19 @@ const rootStoreMutations: MutationsImplementation<RootStoreDefinition> = {
 
 const rootStoreActions: ActionsImplementation<RootStoreDefinition> = {
   resetFooToOne: async ({ commit }: ActionContext<RootStoreDefinition>) => {
-    // Note: Mutations without payload can be called on commit without the payload specified,
-    // or the payload set to undefined (in case commit options are required to be specified)
-    // and the payloadWithType call signature is also still available on dispatch and commit
+    // Note: Mutations and Actions that have no payload or an optional payload can have their
+    // payload parameter in the commit and dispatch calls omitted.
     commit('RESET_FOO'); // equivalent to commit('RESET_FOO', undefined)
     commit('INCREMENT_FOO');
 
-    // Note: When the specified mutation or action does exist but the payload is not specified
-    // even though the payload is needed it will try to match it to an overload using only one
-    // parameter which can only be mutations with no payload which is why
+    // Note: When the specified mutation or action does exist but the payload is not specified,
+    // it will try to match commit to an overload using only one
+    // parameter which can only be mutations with no payload or an optional payload which is why
     // commit('SET_BAR')
-    // will evaluate to the error 'SET_BAR' is not assignable to 'RESET_FOO' | 'INCREMENT_FOO'
+    // will result in the error 'SET_BAR' is not assignable to 'RESET_FOO' | 'INCREMENT_FOO'
     // since these are mutations where payload does not have to be specified
     // These kinds of error messages result from Typescript always trying to match overloads
-    // first with the same amount of parameters
-
-    // This is also the reason why the payloadWithType signature which is easily implemented
-    // is not allowed since it makes the Typescript errors of mismatched payload types or miss spellings
-    // much much more cryptic
+    // with the same amount of parameters
   },
   setBar: async ({ commit }: ActionContext<RootStoreDefinition>, newBar?: string) => {
     // Note: In commit as well as dispatch only names that are actually defined are possible
@@ -64,7 +59,7 @@ const rootStoreActions: ActionsImplementation<RootStoreDefinition> = {
   setBarAfterOneSec: async ({ dispatch }: ActionContext<RootStoreDefinition>, newBar: string): Promise<void> => {
     // wait one second (not implemented in this example)
 
-    // Note: Dispatch is always asynchronous even if the action is implement synchronously
+    // Note: Dispatch is always asynchronous even if the action is implemented synchronously
     await dispatch("setBar", newBar);
   },
 };
@@ -81,9 +76,9 @@ const rootStoreImplementation: StoreImplementation<RootStoreDefinition> = {
   plugins: [(store) => {
     store.subscribe((mutation) => {
       if(mutation.type === 'SET_BAR'){
-        // Note: Mutation is a payloadWithType and completely typed, therefore Typescript can infer
-        // the type of mutation.payload if mutation.type has been tested
-        const newBar: string | undefined = mutation.payload;
+        // Note: Mutation is a payloadWithType interface and is completely typed,
+        // which means Typescript can infer the type of mutation.payload if mutation.type has been narrowed
+        const newBar: string = mutation.payload;
 
         console.log(`New Bar: ${newBar || ""}`);
       }
@@ -95,7 +90,7 @@ const rootStoreImplementation: StoreImplementation<RootStoreDefinition> = {
 // an error will be thrown if it is used directly in the library.
 
 // Note: The createTypedStore cannot correctly infer the StoreDefinition without inserting
-// an any which will cause a TS2589 Typescript error, therefore it is required to explicitly
+// an "any" which will cause a TS2589 Typescript error, therefore it is required to explicitly
 // set what definition is implemented
 // (The created store is currently technically identical to the one created with
 // new Vuex.Store(rootStoreImplementation) but ensures its type)

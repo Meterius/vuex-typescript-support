@@ -13,23 +13,15 @@ type RootStoreGetters = {
   getBarWithSuffix: (suffix: string) => string;
 };
 
-// Note: that since () => unknown can be assigned to () => void
-// mutations and actions could theoretically return anything, but since
-// they are called via commit and dispatch, void and Promise<void> will always be
-// returned respectively
-
 type RootStoreMutations = {
   RESET_FOO: () => void;
   INCREMENT_FOO: () => void;
   SET_BAR: (newBar: string) => void;
 };
 
-// Note: While an action that is typed as returning Promise<void>
-// forces the implementation to also return a Promise
-// an action typed as return void can still be implemented with
-// a function returning a promise (since () => Promise<void> can be assigned to () => void).
-// This is not very relevant since actions can only be called via
-// dispatch which will always return a promise.
+// Note: An action should always be typed with the return type Promise<void> and a mutation with void,
+// any other return type will be overwritten be the Promise<void> and void respectively.
+// Note: That the action implementations can return void or Promise<void>.
 type RootStoreActions = {
   resetFooToOne: () => Promise<void>;
   setBar: (newBar?: string) => Promise<void>;
