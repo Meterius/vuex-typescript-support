@@ -59,8 +59,8 @@ currently not possible to implement namespaced modules behaviour
 behaviour). Therefore at the moment only not namespaced modules are allowed.
 
 ##### Dynamic Module Registration
-RegisterModule and UnregisterModule are not accessible since dynamic modules cannot be
-typed statically. (although technically the methods still exist on the store object)
+RegisterModule and UnregisterModule are not typed correctly since dynamic modules cannot be
+typed statically.
 
 ##### PayloadWithType Commit and Dispatch Signature
 Commit and Dispatch will not accept the payloadWithType syntax and will always require them as separate
