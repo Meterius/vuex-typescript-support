@@ -107,7 +107,7 @@ type TransformActionInput<F extends (...args: any) => any> =
 export type RootStore<SD extends AnyStoreDefinition | AnyStoreModuleDefinition> =
   SD extends AnyStoreModuleDefinition ? SD["Store"] : SD;
 export type State<SD extends AnyStoreDefinition | AnyStoreModuleDefinition> = SD["State"];
-export type Getters<SD extends AnyStoreDefinition | AnyStoreModuleDefinition> = SD["Getters"];
+export type Getters<SD extends AnyStoreDefinition | AnyStoreModuleDefinition> = Readonly<SD["Getters"]>;
 export type Mutations<SD extends AnyStoreDefinition | AnyStoreModuleDefinition> = SD["Mutations"];
 export type Actions<SD extends AnyStoreDefinition | AnyStoreModuleDefinition> = SD["Actions"];
 export type Modules<SD extends AnyStoreDefinition | AnyStoreModuleDefinition> = SD["Modules"];
