@@ -1,7 +1,5 @@
 import {
-  HasPayload,
   Overwrite,
-  Payload,
 } from "./utility-types";
 import {
   Actions,
@@ -14,7 +12,9 @@ import {
   StoreGetters,
   StoreState,
   Commit,
-  Dispatch
+  Dispatch,
+  HasPayload,
+  Payload,
 } from "./definition-types";
 import { Store, StoreOptions } from "vuex";
 import { TypedStore } from "./typed-store";

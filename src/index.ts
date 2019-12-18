@@ -13,6 +13,11 @@ export {
   StoreGetters,
   StoreActions,
   StoreMutations,
+  SomeActionPayloadWithType,
+  SomeMutationPayloadWithType,
+  PayloadWithType,
+  Payload,
+  HasPayload,
 } from "./definition-types";
 
 export {
@@ -29,3 +34,4 @@ export {
 export {
   TypedStore, createTypedStore,
 } from "./typed-store";
+

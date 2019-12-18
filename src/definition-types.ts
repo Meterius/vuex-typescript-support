@@ -1,4 +1,4 @@
-import { KeysWithoutPayload, Payload, UnionToIntersection } from "./utility-types";
+import { UnionToIntersection } from "./utility-types";
 import { CommitOptions, DispatchOptions } from "vuex";
 
 export type AnyMutation = (() => void) | ((payload: any) => void);
@@ -125,6 +125,16 @@ export type StoreActions<SD extends AnyStoreDefinition | AnyStoreModuleDefinitio
 /*
     Commit and Dispatch Definitions
  */
+
+export type KeysWithoutPayload<FM extends Record<string, (...args: any) => any>> = {
+  [key in keyof FM]: HasPayload<FM[key]> extends true ?
+    never : key
+}[keyof FM];
+
+export type HasPayload<F extends (...args: any) => any> = F extends () => any ? false : true;
+
+export type Payload<F extends (arg: any) => any> =
+  HasPayload<F> extends true ? (F extends (payload: infer P) => any ? P : undefined) : undefined;
 
 export type SomeMutationPayloadWithType<SD extends AnyStoreDefinition> = {
   [key in keyof StoreMutations<SD>]: PayloadWithType<key, Payload<StoreMutations<SD>[key]>>
