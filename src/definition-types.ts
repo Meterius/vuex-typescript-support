@@ -158,7 +158,7 @@ export type HasOptionalPayload<F> = F extends () => any ? true : false;
 
 export type Payload<F> = HasPayload<F> extends true ? (F extends (payload: infer P) => any ? P : undefined) : undefined;
 
-export type HasPayload<F> = ((any extends (F extends (payload: infer P) => any ? P : any) ? never : any) extends never ? 1 : 0) extends 1 ? false : true;
+export type HasPayload<F> = ((p: any) => any) extends F ? true : false;
 
 export type SomeMutationPayloadWithType<SD extends AnyStoreDefinition> = {
   [key in keyof StoreMutations<SD>]: PayloadWithType<key, StoreMutations<SD>[key]>
