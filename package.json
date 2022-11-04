@@ -4,6 +4,7 @@
   "description": "Add Typescript types to improve type safety in Vue projects using Vuex",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "files": ["dist/**/*"],
   "scripts": {
     "build": "npx --no-install rimraf dist && npx --no-install tsc",
     "build:watch": "npm run build -- --watch",
@@ -19,11 +20,13 @@
     "url": "https://github.com/Meterius/vuex-typescript-support/issues"
   },
   "homepage": "https://github.com/Meterius/vuex-typescript-support#readme",
+  "peerDependencies": {
+    "vue": "^2.6.14",
+    "vuex": "^3.6.2"
+  },
   "devDependencies": {
     "rimraf": "^3.0.0",
-    "typescript": "^3.7.3",
-    "vue": "^2.6.11",
-    "vuex": "^3.1.2"
+    "typescript": "^3.7.3"
   },
   "keywords": [
     "typescript",
