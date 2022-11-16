@@ -64,8 +64,8 @@ export type TypedStore<SD extends AnyStoreDefinition> =
 export function createTypedStore<
   SD extends AnyStoreDefinition,
 >(
-  storeConstructor: new (options: StoreOptions<any>) => Store<any>,
+  createStore: (options: StoreOptions<any>) => Store<any>,
   storeImplementation: StoreImplementation<SD>
 ): TypedStore<SD> {
-  return new storeConstructor(storeImplementation) as TypedStore<SD>;
+  return createStore(storeImplementation) as TypedStore<SD>;
 }
