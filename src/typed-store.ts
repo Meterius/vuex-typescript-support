@@ -67,5 +67,6 @@ export function createTypedStore<
   createStore: (options: StoreOptions<any>) => Store<any>,
   storeImplementation: StoreImplementation<SD>
 ): TypedStore<SD> {
+  // @ts-ignore
   return createStore(storeImplementation) as TypedStore<SD>;
 }
